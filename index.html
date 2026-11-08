@@ -1,0 +1,1039 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Deseos navideños de la familia</title>
+<meta name="description" content="Anótate y cuéntale a la familia qué te gustaría recibir esta Navidad.">
+<meta property="og:title" content="Deseos de Navidad de la familia">
+<meta property="og:description" content="Anótate y cuéntanos qué te gustaría recibir esta Navidad.">
+<meta name="theme-color" content="#0d3528">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%8E%81%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;700&family=Nunito:wght@400;600;700;800&family=Yeseva+One&display=swap">
+<style>
+:root{
+  /* Un solo mundo visual: noche de pino con nieve; cada familiar cuelga una etiqueta de regalo de papel con listón rojo. */
+  --pine:#0d3528;
+  --paper:#fbf7ee;
+  --ink:#1f2b26;
+  --berry:#c42f47;
+  --gold:#e9b949;
+  --snow:#eef5f1;
+
+  --ink-soft:#5b6963;
+  --berry-dk:#9c2238;
+  --gold-dk:#a97d12;
+  --wish-ink:#1c5a42;
+  --wish-bg:#e3efe7;
+  --no-ink:#972a3a;
+  --no-bg:#f8e7e7;
+  --rule:rgba(31,43,38,.14);
+  --sand:#efe8d8;
+
+  --font-display:"Yeseva One", Georgia, "Times New Roman", serif;
+  --font-hand:"Caveat", "Segoe Print", "Bradley Hand", cursive;
+  --font-body:"Nunito", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  color-scheme: dark;
+}
+*{box-sizing:border-box}
+html{height:100%;-webkit-text-size-adjust:100%}
+body{margin:0;min-height:100%;background:var(--pine);color:var(--snow);font-family:var(--font-body);font-size:17px;line-height:1.5}
+.sky{position:fixed;inset:0;z-index:0;pointer-events:none;
+  background:radial-gradient(110% 60% at 50% -8%, #22654f 0%, rgba(13,53,40,0) 70%),
+             radial-gradient(90% 50% at 50% 112%, #06221a 0%, rgba(6,34,26,0) 70%)}
+#snow{position:fixed;inset:0;width:100%;height:100%;z-index:0;pointer-events:none}
+.page{position:relative;z-index:1}
+.wrap{max-width:1120px;margin:0 auto;padding:0 20px}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+
+/* ---------- Encabezado ---------- */
+.hero{padding:40px 0 30px}
+.hero-grid{display:grid;gap:28px;align-items:center}
+@media (min-width:820px){.hero-grid{grid-template-columns:1.5fr 1fr}.hero{padding:56px 0 36px}}
+.countdown{display:inline-flex;align-items:center;gap:8px;margin:0 0 18px;padding:6px 14px 6px 10px;border:1.5px solid rgba(233,185,73,.6);border-radius:999px;color:var(--gold);font-weight:700;font-size:15px;background:rgba(0,0,0,.18)}
+.countdown svg{width:16px;height:16px;fill:var(--gold);flex:none}
+h1{font-family:var(--font-display);font-weight:400;font-size:clamp(2.7rem,10.5vw,5.3rem);line-height:.98;margin:0;letter-spacing:-.01em;text-wrap:balance}
+h1 .hand{display:block;font-family:var(--font-hand);font-weight:700;color:var(--gold);font-size:.6em;transform:rotate(-3deg);transform-origin:left center;margin-top:.14em;letter-spacing:0}
+.lede{max-width:520px;font-size:19px;color:rgba(238,245,241,.88);margin:20px 0 26px}
+.hero-actions{display:flex;flex-wrap:wrap;gap:14px;align-items:center}
+.steps{list-style:none;padding:0;margin:30px 0 0;display:flex;flex-wrap:wrap;gap:10px 22px;font-size:15px;color:rgba(238,245,241,.82)}
+.steps li{display:flex;align-items:center;gap:8px}
+.steps b{display:inline-grid;place-items:center;width:24px;height:24px;border-radius:50%;background:var(--gold);color:var(--pine);font-size:13px;font-weight:800}
+.hero-tag{display:none}
+@media (min-width:820px){.hero-tag{display:block;justify-self:center;width:250px}}
+.hero-tag .tag{padding:54px 26px 26px;text-align:center}
+.hero-to{font-family:var(--font-hand);font-weight:700;font-size:42px;line-height:1;margin:4px 0 14px}
+.hero-from{font-family:var(--font-hand);font-size:26px;color:var(--ink-soft);margin:0;padding-top:12px;border-top:1.5px dashed var(--rule)}
+.hero-year{margin:10px 0 0;font-size:12px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--berry)}
+
+/* ---------- Botones ---------- */
+.btn{font:inherit;font-weight:800;border:0;cursor:pointer;border-radius:999px;padding:12px 22px;display:inline-flex;align-items:center;justify-content:center;gap:8px;line-height:1.2;text-decoration:none;transition:transform .12s, box-shadow .12s, filter .12s}
+.btn:focus-visible,.tag-edit:focus-visible,.idea:focus-visible,.icon-btn:focus-visible,.picked button:focus-visible,.search:focus-visible,.items a:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
+.btn-primary{background:var(--berry);color:#fff;box-shadow:0 5px 0 var(--berry-dk)}
+.btn-primary:hover{filter:brightness(1.07)}
+.btn-primary:active{transform:translateY(3px);box-shadow:0 2px 0 var(--berry-dk)}
+.btn-primary:disabled{opacity:.5;cursor:not-allowed;transform:none;filter:none}
+.btn-lg{font-size:19px;padding:16px 32px}
+.btn-ghost{background:transparent;color:var(--snow);box-shadow:inset 0 0 0 2px rgba(238,245,241,.45)}
+.btn-ghost:hover{box-shadow:inset 0 0 0 2px var(--snow)}
+.btn-quiet{background:transparent;color:var(--ink);box-shadow:inset 0 0 0 2px #d8cfbd}
+.btn-quiet:hover{box-shadow:inset 0 0 0 2px var(--ink-soft)}
+.btn-danger{background:var(--no-ink);color:#fff}
+.btn-link-danger{background:none;color:var(--no-ink);padding:10px 2px;text-decoration:underline;text-underline-offset:3px;font-weight:700}
+
+/* ---------- Tablero ---------- */
+.board-head{display:flex;flex-wrap:wrap;align-items:baseline;gap:6px 16px;margin:10px 0 18px;padding-top:24px;border-top:1px solid rgba(238,245,241,.16)}
+.board-head h2{font-family:var(--font-display);font-weight:400;font-size:clamp(1.6rem,4.6vw,2.2rem);margin:0}
+.tally{color:var(--gold);font-weight:700;font-variant-numeric:tabular-nums}
+.search{margin-left:auto;font:inherit;font-size:16px;color:var(--snow);background:rgba(0,0,0,.22);border:1.5px solid rgba(238,245,241,.3);border-radius:999px;padding:8px 16px;width:min(100%,260px)}
+.search::placeholder{color:rgba(238,245,241,.6)}
+.notice{display:flex;gap:12px;align-items:flex-start;background:rgba(0,0,0,.22);border:1px solid rgba(233,185,73,.4);border-left:4px solid var(--gold);padding:12px 16px;border-radius:10px;margin:0 0 22px;font-size:15.5px}
+.notice[hidden]{display:none}
+.notice svg{width:18px;height:18px;fill:var(--gold);flex:none;margin-top:3px}
+.notice p{margin:0}
+.board{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,290px),1fr));gap:44px 26px;align-items:start;padding:6px 0 44px}
+.no-results{grid-column:1/-1;margin:0;color:rgba(238,245,241,.8)}
+
+/* ---------- Etiqueta de regalo ---------- */
+.tag-wrap{position:relative;padding-top:26px;transform:rotate(var(--tilt,0deg));transform-origin:50% 0;transition:transform .6s cubic-bezier(.2,.8,.2,1);filter:drop-shadow(0 12px 16px rgba(0,0,0,.35))}
+.tag-wrap:hover{transform:rotate(0deg)}
+.tag-wrap::before{content:"";position:absolute;left:50%;top:0;width:3px;height:44px;margin-left:-1.5px;background:linear-gradient(#e0475f,var(--berry));border-radius:2px;z-index:2}
+.tag{position:relative;background:var(--paper);color:var(--ink);padding:48px 22px 16px;clip-path:polygon(32px 0,calc(100% - 32px) 0,100% 32px,100% 100%,0 100%,0 32px)}
+.tag-hole{position:absolute;top:9px;left:50%;width:18px;height:18px;margin-left:-9px;border-radius:50%;background:var(--pine);box-shadow:0 0 0 4px #e6d9be,inset 0 2px 3px rgba(0,0,0,.45)}
+.mine .tag{box-shadow:inset 0 0 0 3px var(--gold)}
+.tag-head{display:flex;align-items:center;gap:12px;padding-bottom:12px;border-bottom:1.5px dashed var(--rule)}
+.avatar{flex:none;width:52px;height:52px;border-radius:50%;display:grid;place-items:center;font-size:28px;background:var(--wish-bg)}
+.who{min-width:0}
+.para{display:block;font-family:var(--font-hand);font-size:20px;color:var(--ink-soft);line-height:1}
+.tag-name{font-family:var(--font-hand);font-weight:700;font-size:34px;line-height:1.02;margin:2px 0 0;overflow-wrap:anywhere}
+.you{margin-left:auto;align-self:flex-start;font-size:12px;font-weight:800;letter-spacing:.07em;text-transform:uppercase;background:var(--gold);color:var(--pine);padding:3px 10px;border-radius:999px}
+.sec-title{font-size:12px;font-weight:800;letter-spacing:.09em;text-transform:uppercase;margin:14px 0 6px}
+.sec-title.wish{color:var(--wish-ink)}
+.sec-title.no{color:var(--no-ink)}
+.items{list-style:none;margin:0;padding:0;display:grid;gap:6px}
+.items li{position:relative;padding-left:24px;overflow-wrap:anywhere;font-size:16px;line-height:1.4}
+.items.wish li::before{content:"★";position:absolute;left:2px;top:0;color:var(--gold-dk)}
+.items.no li{color:#4b524f}
+.items.no li::before{content:"✕";position:absolute;left:3px;top:1px;color:var(--no-ink);font-weight:800;font-size:13px}
+.items a{color:var(--wish-ink);font-weight:700;text-decoration:underline;text-underline-offset:2px}
+.muted{color:var(--ink-soft);margin:0;font-size:15px}
+.tag-foot{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:16px;padding-top:10px;border-top:1px solid var(--rule);font-size:13px;color:var(--ink-soft);min-height:44px}
+.tag-edit{font:inherit;font-size:14px;font-weight:800;color:var(--wish-ink);background:var(--wish-bg);border:0;border-radius:999px;padding:8px 14px;cursor:pointer;flex:none}
+.tag-edit:hover{background:#d3e7da}
+.example .tag{background:#f4eee1}
+.stamp{position:absolute;top:44px;right:16px;border:2px solid var(--berry);color:var(--berry);font-weight:800;font-size:12px;letter-spacing:.12em;text-transform:uppercase;padding:2px 8px;border-radius:6px;transform:rotate(8deg)}
+.empty{grid-column:1/-1;display:grid;gap:30px;align-items:center}
+@media (min-width:720px){.empty{grid-template-columns:1fr minmax(280px,340px)}}
+.empty h3{font-family:var(--font-display);font-weight:400;font-size:clamp(1.5rem,4vw,2rem);margin:0 0 8px}
+.empty p{margin:0 0 20px;color:rgba(238,245,241,.85);max-width:440px}
+
+@keyframes swing{
+  0%{transform:rotate(calc(var(--tilt,0deg) + 8deg))}
+  35%{transform:rotate(calc(var(--tilt,0deg) - 4.5deg))}
+  65%{transform:rotate(calc(var(--tilt,0deg) + 2deg))}
+  100%{transform:rotate(var(--tilt,0deg))}
+}
+.swing{animation:swing 1.5s cubic-bezier(.3,.6,.4,1) both;animation-delay:var(--d,0ms)}
+.skel .tag{min-height:250px}
+.skel-bar{height:14px;border-radius:7px;margin:12px 0;background:linear-gradient(90deg,#ece3d1,#f8f3e8,#ece3d1);background-size:200% 100%;animation:shimmer 1.4s linear infinite}
+@keyframes shimmer{to{background-position:-200% 0}}
+
+.foot{padding:4px 0 44px;color:rgba(238,245,241,.66);font-size:14px}
+
+/* ---------- Formulario ---------- */
+.sheet{position:fixed;inset:0;z-index:50;display:flex;align-items:flex-end;justify-content:center}
+.sheet[hidden]{display:none}
+.sheet-backdrop{position:absolute;inset:0;background:rgba(4,20,14,.62)}
+.sheet-panel{position:relative;width:100%;max-width:600px;max-height:94%;display:flex;flex-direction:column;background:var(--paper);color:var(--ink);border-radius:22px 22px 0 0;color-scheme:light;box-shadow:0 -10px 40px rgba(0,0,0,.4);animation:rise .32s cubic-bezier(.2,.8,.2,1);margin:0}
+@media (min-width:700px){.sheet{align-items:center;padding:24px}.sheet-panel{border-radius:22px;max-height:100%}}
+@keyframes rise{from{transform:translateY(28px);opacity:0}}
+.sheet-top{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:18px 20px 12px;border-bottom:1px solid var(--rule)}
+.sheet-top h2{font-family:var(--font-display);font-weight:400;font-size:26px;margin:0;outline:none}
+.icon-btn{flex:none;width:42px;height:42px;border-radius:50%;border:0;background:var(--sand);color:var(--ink);font-size:26px;line-height:1;cursor:pointer}
+.sheet-body{overflow:auto;padding:4px 20px 22px;overscroll-behavior:contain}
+.field{border:0;margin:0;padding:20px 0 4px;min-width:0}
+.q{display:flex;align-items:center;flex-wrap:wrap;gap:8px 10px;font-weight:800;font-size:18px;padding:0;margin:0 0 4px;line-height:1.3}
+.qn{display:inline-grid;place-items:center;width:28px;height:28px;border-radius:50%;background:var(--pine);color:#fff;font-size:14px;flex:none}
+.opt{font-size:11.5px;font-weight:800;letter-spacing:.07em;text-transform:uppercase;color:var(--ink-soft);background:var(--sand);padding:2px 9px;border-radius:999px}
+.hint{margin:0 0 10px 38px;color:var(--ink-soft);font-size:15px}
+.txt{width:100%;font:inherit;font-size:17px;color:var(--ink);background:#fff;border:2px solid #ddd3c1;border-radius:12px;padding:12px 14px}
+.txt:focus{border-color:var(--pine);outline:none;box-shadow:0 0 0 3px rgba(233,185,73,.55)}
+.txt::placeholder{color:#9aa39f}
+.adder{display:flex;gap:8px}
+.adder .txt{flex:1;min-width:0}
+.btn-add{background:var(--pine);color:#fff;border-radius:12px;padding:0 18px}
+.btn-add:hover{filter:brightness(1.2)}
+.ideas{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0 0;align-items:center;font-size:14px;color:var(--ink-soft)}
+.idea{font:inherit;font-size:14px;font-weight:700;color:var(--wish-ink);background:transparent;border:1.5px dashed #9cbfae;border-radius:999px;padding:5px 12px;cursor:pointer}
+.idea:hover{background:var(--wish-bg)}
+.picked{list-style:none;margin:12px 0 0;padding:0;display:grid;gap:8px}
+.picked:empty{display:none}
+.picked li{display:flex;align-items:center;gap:10px;padding:8px 8px 8px 14px;border-radius:12px;background:var(--wish-bg);color:var(--wish-ink);font-weight:600;line-height:1.35}
+.picked.no li{background:var(--no-bg);color:var(--no-ink)}
+.picked li span{flex:1;min-width:0;overflow-wrap:anywhere}
+.picked button{flex:none;width:34px;height:34px;border-radius:50%;border:0;background:rgba(255,255,255,.75);color:inherit;font-size:21px;line-height:1;cursor:pointer}
+.err{color:var(--no-ink);font-weight:700;font-size:14.5px;margin:8px 0 0}
+.err[hidden]{display:none}
+legend.q{float:left;width:100%}
+.avatars{clear:both;display:grid;grid-template-columns:repeat(6,1fr);gap:8px;padding-top:10px}
+.av{position:relative;display:block}
+.av input{position:absolute;inset:0;width:100%;height:100%;margin:0;opacity:0;cursor:pointer}
+.av span{display:grid;place-items:center;aspect-ratio:1;border-radius:16px;font-size:28px;background:#f1ebdd;border:2.5px solid transparent;transition:transform .15s}
+.av input:checked + span{background:var(--wish-bg);border-color:var(--berry);transform:scale(1.06)}
+.av input:focus-visible + span{outline:3px solid var(--gold);outline-offset:2px}
+.sheet-foot{padding:14px 20px 16px;border-top:1px solid var(--rule);background:var(--paper);border-radius:0 0 22px 22px}
+.foot-row{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
+.foot-right{display:flex;gap:10px;margin-left:auto}
+.form-err{margin:0 0 12px;padding:10px 14px;border-radius:10px;background:var(--no-bg);color:var(--no-ink);font-weight:700;font-size:15px}
+.form-err[hidden],.foot-row[hidden],.confirm[hidden]{display:none}
+.confirm p{margin:0 0 12px;font-weight:700}
+.confirm .foot-right{margin-left:0;flex-wrap:wrap}
+
+.foot-link{background:none;border:0;padding:8px 0;font:inherit;font-size:14px;color:rgba(238,245,241,.75);text-decoration:underline;text-underline-offset:3px;cursor:pointer}
+.foot-link:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
+.foot-link[hidden]{display:none}
+.foot p{margin:0 0 6px}
+.sheet-panel.small{max-width:440px}
+.admin-intro{margin:16px 0 18px;color:var(--ink-soft)}
+.toast{position:fixed;left:50%;top:16px;transform:translate(-50%,-20px);opacity:0;z-index:60;background:var(--paper);color:var(--ink);font-weight:800;padding:12px 20px;border-radius:999px;box-shadow:0 10px 30px rgba(0,0,0,.35);transition:opacity .3s, transform .3s;pointer-events:none;max-width:calc(100% - 32px);text-align:center}
+.toast.show{opacity:1;transform:translate(-50%,0)}
+
+@media (max-width:420px){
+  .wrap{padding:0 16px}
+  .avatars{grid-template-columns:repeat(4,1fr)}
+  .hint{margin-left:0}
+  .btn-lg{width:100%}
+  .hero-actions .btn-ghost{width:100%}
+}
+@media (prefers-reduced-motion: reduce){
+  .swing,.sheet-panel{animation:none}
+  .tag-wrap,.toast,.av span{transition:none}
+  .skel-bar{animation:none}
+}
+</style>
+</head>
+<body>
+<div class="sky" aria-hidden="true"></div>
+<canvas id="snow" aria-hidden="true"></canvas>
+
+<div class="page">
+  <header class="hero">
+    <div class="wrap hero-grid">
+      <div>
+        <p class="countdown"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2l2.9 6.3 6.9.8-5.1 4.7 1.4 6.8L12 17.2l-6.1 3.4 1.4-6.8L2.2 9.1l6.9-.8z"/></svg><span id="countdown">Faltan pocos días para Nochebuena</span></p>
+        <h1>Deseos de Navidad <span class="hand">de toda la familia</span></h1>
+        <p class="lede">Anótate y escribe qué te gustaría recibir. Si quieres, también lo que prefieres que no te regalen. Así todos le atinan al regalo.</p>
+        <div class="hero-actions">
+          <button id="cta" class="btn btn-primary btn-lg" type="button" disabled>Anotarme</button>
+          <button id="addOther" class="btn btn-ghost" type="button" hidden>Agregar a otro familiar</button>
+        </div>
+        <ol class="steps" aria-label="Cómo funciona">
+          <li><b>1</b>Escribe tu nombre</li>
+          <li><b>2</b>Anota lo que te gustaría</li>
+          <li><b>3</b>Si quieres, lo que no</li>
+        </ol>
+      </div>
+      <div class="hero-tag" aria-hidden="true">
+        <div class="tag-wrap swing" style="--tilt:3deg;--d:200ms">
+          <div class="tag">
+            <div class="tag-hole"></div>
+            <span class="para">Para:</span>
+            <p class="hero-to">toda la familia</p>
+            <p class="hero-from">De: Santa</p>
+            <p class="hero-year" id="heroYear">Navidad</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <div class="board-head">
+      <h2>Las listas de la familia</h2>
+      <span id="tally" class="tally"></span>
+      <label class="sr" for="search">Buscar a alguien</label>
+      <input id="search" class="search" type="search" placeholder="Buscar a alguien" autocomplete="off" hidden>
+    </div>
+    <div id="notice" class="notice" role="status" hidden>
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2l2.9 6.3 6.9.8-5.1 4.7 1.4 6.8L12 17.2l-6.1 3.4 1.4-6.8L2.2 9.1l6.9-.8z"/></svg>
+      <p></p>
+    </div>
+    <div id="board" class="board" aria-live="polite"></div>
+  </main>
+
+  <footer class="wrap foot">
+    <p id="footNote">Cada quien edita su lista desde el celular donde la creó.</p>
+    <button type="button" class="foot-link" id="adminBtn" hidden>Soy el organizador</button>
+  </footer>
+</div>
+
+<div id="sheet" class="sheet" hidden>
+  <div class="sheet-backdrop" data-close></div>
+  <form id="form" class="sheet-panel" role="dialog" aria-modal="true" aria-labelledby="sheetTitle" novalidate>
+    <div class="sheet-top">
+      <h2 id="sheetTitle" tabindex="-1">Mi lista de Navidad</h2>
+      <button type="button" class="icon-btn" data-close aria-label="Cerrar">×</button>
+    </div>
+    <div class="sheet-body" id="sheetBody">
+      <div class="field">
+        <label for="fName" class="q"><span class="qn">1</span><span id="qName">¿Cómo te llamas?</span></label>
+        <p class="hint" id="hName">Como te dice la familia: “Tía Lupe”, “Abuelo Beto”…</p>
+        <input id="fName" class="txt" type="text" maxlength="40" autocomplete="off" enterkeyhint="next">
+        <p class="err" id="errName" hidden>Escribe un nombre para que sepan de quién es la lista.</p>
+      </div>
+
+      <fieldset class="field">
+        <legend class="q"><span class="qn">2</span><span id="qAvatar">Elige tu figura</span></legend>
+        <div class="avatars" id="avatars"></div>
+      </fieldset>
+
+      <div class="field">
+        <label for="fWish" class="q"><span class="qn">3</span><span id="qWish">¿Qué te gustaría recibir?</span></label>
+        <p class="hint">Escribe una idea y toca <b>Agregar</b>. Puedes agregar varias, o pegar el enlace de la tienda.</p>
+        <div class="adder">
+          <input id="fWish" class="txt" type="text" maxlength="140" placeholder="Ej. Unos audífonos inalámbricos" autocomplete="off">
+          <button type="button" class="btn btn-add" id="addWish">Agregar</button>
+        </div>
+        <div class="ideas" id="ideas"><span>¿Sin ideas? Toca una:</span></div>
+        <ul class="picked wish" id="wishList"></ul>
+        <p class="err" id="errWish" hidden>Agrega al menos una idea de regalo.</p>
+      </div>
+
+      <div class="field">
+        <label for="fNo" class="q"><span class="qn">4</span><span id="qNo">¿Algo que prefieras no recibir?</span><span class="opt">Opcional</span></label>
+        <p class="hint">Así nadie regala algo que no se va a usar. Puedes dejarlo vacío.</p>
+        <div class="adder">
+          <input id="fNo" class="txt" type="text" maxlength="140" placeholder="Ej. Más tazas, ya tengo muchas" autocomplete="off">
+          <button type="button" class="btn btn-add" id="addNo">Agregar</button>
+        </div>
+        <ul class="picked no" id="noList"></ul>
+        <p class="err" id="errNo" hidden></p>
+      </div>
+    </div>
+
+    <div class="sheet-foot">
+      <p class="form-err" id="formErr" role="alert" hidden></p>
+      <div class="foot-row" id="footRow">
+        <button type="button" class="btn btn-link-danger" id="delBtn" hidden>Borrar lista</button>
+        <div class="foot-right">
+          <button type="button" class="btn btn-quiet" data-close>Cancelar</button>
+          <button type="submit" class="btn btn-primary" id="saveBtn">Guardar mi lista</button>
+        </div>
+      </div>
+      <div class="confirm" id="confirmDel" hidden>
+        <p>¿Borrar esta lista? No se puede deshacer.</p>
+        <div class="foot-right">
+          <button type="button" class="btn btn-quiet" id="confirmNo">No, conservarla</button>
+          <button type="button" class="btn btn-danger" id="confirmYes">Sí, borrar</button>
+        </div>
+      </div>
+    </div>
+  </form>
+</div>
+
+<div id="adminSheet" class="sheet" hidden>
+  <div class="sheet-backdrop" data-close-admin></div>
+  <form id="adminForm" class="sheet-panel small" role="dialog" aria-modal="true" aria-labelledby="adminTitle" novalidate>
+    <div class="sheet-top">
+      <h2 id="adminTitle">Modo organizador</h2>
+      <button type="button" class="icon-btn" data-close-admin aria-label="Cerrar">×</button>
+    </div>
+    <div class="sheet-body">
+      <p class="admin-intro">Con la clave podrás agregar a familiares que no usen celular y corregir cualquier lista desde este dispositivo.</p>
+      <label for="fClave" class="q">Clave de organizador</label>
+      <input id="fClave" class="txt" type="password" autocomplete="off" enterkeyhint="go">
+      <p class="err" id="errClave" hidden>Esa clave no es correcta.</p>
+    </div>
+    <div class="sheet-foot">
+      <div class="foot-row">
+        <div class="foot-right">
+          <button type="button" class="btn btn-quiet" data-close-admin>Cancelar</button>
+          <button type="submit" class="btn btn-primary" id="claveBtn">Entrar</button>
+        </div>
+      </div>
+    </div>
+  </form>
+</div>
+
+<div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+<script>
+(() => {
+"use strict";
+
+/* ===================== CONFIGURACIÓN DE FIREBASE =====================
+   Pega aquí el firebaseConfig de tu proyecto (Consola de Firebase →
+   Configuración del proyecto → Tus apps → App web). Estos datos no son
+   secretos: lo que protege las listas son las reglas de Firestore.     */
+const firebaseConfig = {
+  apiKey: "AIzaSyDNANNJ-GiBoI6zbiGFrRtf4SGyEQvZAYQ",
+  authDomain: "navidad-familiar-6ebc6.firebaseapp.com",
+  projectId: "navidad-familiar-6ebc6",
+  storageBucket: "navidad-familiar-6ebc6.firebasestorage.app",
+  messagingSenderId: "233540400313",
+  appId: "1:233540400313:web:a2fba2430a1ea03b841768"
+};
+/* ==================================================================== */
+
+const FIREBASE_VERSION = "12.19.0";
+const AVATARS = ["🎅","🤶","⛄","🦌","🐧","🎄","⭐","🎁","🍪","🔔","🐱","🐶"];
+const IDEAS = [
+  ["Un libro", "Un libro de "],
+  ["Ropa (con tu talla)", "Ropa talla "],
+  ["Perfume", "Un perfume "],
+  ["Algo para la cocina", "Algo para la cocina: "],
+  ["Una experiencia juntos", "Una experiencia juntos: "],
+  ["Tarjeta de regalo", "Tarjeta de regalo de "],
+  ["Algo hecho a mano", "Algo hecho a mano"]
+];
+const MAX_ITEMS = 25, MAX_LEN = 140, MAX_NAME = 40;
+const reduceMotion = window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches;
+const $ = (s) => document.querySelector(s);
+
+const S = {
+  fb: null, uid: null, isAdmin: false,
+  available: null, setupMsg: "", loaded: false, confirmed: false, slow: false, failed: false, failMsg: "",
+  entries: [], search: "", animateAll: true, justSaved: null,
+  editing: null, wants: [], avoid: [], saving: false, lastFocus: null
+};
+
+/* ---------- utilidades ---------- */
+function el(tag, props, ...kids) {
+  const n = document.createElement(tag);
+  if (props) for (const [k, v] of Object.entries(props)) {
+    if (v == null || v === false) continue;
+    if (k === "class") n.className = v;
+    else if (k === "text") n.textContent = v;
+    else if (k.startsWith("on")) n.addEventListener(k.slice(2), v);
+    else n.setAttribute(k, v === true ? "" : v);
+  }
+  for (const c of kids.flat()) {
+    if (c == null || c === false) continue;
+    n.append(c.nodeType ? c : String(c));
+  }
+  return n;
+}
+const norm = (s) => String(s).normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase();
+const clean = (s, max) => String(s).trim().replace(/\s+/g, " ").slice(0, max);
+const withTimeout = (p, ms) => Promise.race([p, new Promise((_, rej) => setTimeout(() => rej({ code: "timeout" }), ms))]);
+
+function richText(str) {
+  const frag = document.createDocumentFragment();
+  const re = /https?:\/\/[^\s<>"']+/gi;
+  let last = 0, m;
+  while ((m = re.exec(str))) {
+    const url = m[0].replace(/[),.;:!?]+$/, "");
+    if (m.index > last) frag.append(str.slice(last, m.index));
+    let host = null;
+    try { const u = new URL(url); if (u.protocol === "http:" || u.protocol === "https:") host = u.hostname.replace(/^www\./, ""); } catch (e) {}
+    if (host) frag.append(el("a", { href: url, target: "_blank", rel: "noopener noreferrer", text: host + " ↗" }));
+    else frag.append(url);
+    last = m.index + url.length;
+    re.lastIndex = last;
+  }
+  if (last < str.length) frag.append(str.slice(last));
+  return frag;
+}
+
+const rtf = (window.Intl && Intl.RelativeTimeFormat) ? new Intl.RelativeTimeFormat("es", { numeric: "auto" }) : null;
+function relTime(ts) {
+  if (!ts) return "";
+  const diff = ts - Date.now();
+  const min = Math.round(diff / 60000);
+  if (Math.abs(min) < 1) return "justo ahora";
+  if (!rtf) return new Date(ts).toLocaleDateString("es-MX");
+  if (Math.abs(min) < 60) return rtf.format(min, "minute");
+  const hr = Math.round(diff / 3600000);
+  if (Math.abs(hr) < 24) return rtf.format(hr, "hour");
+  const day = Math.round(diff / 86400000);
+  if (Math.abs(day) < 30) return rtf.format(day, "day");
+  return "el " + new Date(ts).toLocaleDateString("es-MX", { day: "numeric", month: "long" });
+}
+
+function tiltFor(id) {
+  let h = 0;
+  for (const ch of String(id)) h = (h * 31 + ch.charCodeAt(0)) | 0;
+  return ((Math.abs(h) % 7) - 3) * 0.55;
+}
+
+function christmasInfo() {
+  const now = new Date();
+  const y = now.getFullYear(), m = now.getMonth(), d = now.getDate();
+  if (m === 11 && d === 24) return { text: "¡Hoy es Nochebuena!", year: y };
+  if (m === 11 && d === 25) return { text: "¡Feliz Navidad!", year: y };
+  const ty = (m === 11 && d > 25) ? y + 1 : y;
+  const days = Math.round((new Date(ty, 11, 24) - new Date(y, m, d)) / 86400000);
+  return { text: days === 1 ? "Mañana es Nochebuena" : `Faltan ${days} días para Nochebuena`, year: ty };
+}
+function renderCountdown() {
+  const c = christmasInfo();
+  $("#countdown").textContent = c.text;
+  $("#heroYear").textContent = "Navidad " + c.year;
+}
+
+function toast(msg) {
+  const t = $("#toast");
+  t.textContent = msg;
+  t.classList.add("show");
+  clearTimeout(toast.timer);
+  toast.timer = setTimeout(() => t.classList.remove("show"), 3200);
+}
+
+/* ---------- datos ---------- */
+function cleanList(v) {
+  return Array.isArray(v)
+    ? v.filter((x) => typeof x === "string").map((x) => clean(x, MAX_LEN)).filter(Boolean).slice(0, MAX_ITEMS)
+    : [];
+}
+function cleanEntry(doc) {
+  const d = doc.data() || {};
+  return {
+    id: doc.id,
+    name: (typeof d.name === "string" ? clean(d.name, MAX_NAME) : "") || "Sin nombre",
+    avatar: AVATARS.includes(d.avatar) ? d.avatar : "🎁",
+    wants: cleanList(d.wants),
+    avoid: cleanList(d.avoid),
+    updatedAt: Number.isFinite(d.updatedAt) ? d.updatedAt : 0,
+    createdAt: Number.isFinite(d.createdAt) ? d.createdAt : 0
+  };
+}
+const listRef = (id) => S.fb.fs.doc(S.fb.db, "familia", id);
+
+/* ---------- etiquetas ---------- */
+function section(kind, title, items) {
+  return el("section", { class: "tag-sec" },
+    el("h4", { class: "sec-title " + kind, text: title }),
+    items.length
+      ? el("ul", { class: "items " + kind }, items.map((t) => el("li", null, richText(t))))
+      : el("p", { class: "muted", text: "Todavía no anota nada." }));
+}
+
+function tagNode(e, opts) {
+  const o = opts || {};
+  const wrap = el("article", {
+    class: "tag-wrap" + (o.mine ? " mine" : "") + (o.example ? " example" : ""),
+    style: `--tilt:${tiltFor(e.id)}deg`,
+    "aria-label": o.example ? "Ejemplo de etiqueta" : `Lista de ${e.name}`
+  });
+  const foot = el("div", { class: "tag-foot" },
+    o.example
+      ? el("span", { text: "Así se verá tu etiqueta" })
+      : el("span", { "data-ts": e.updatedAt || null, text: e.updatedAt ? "Actualizado " + relTime(e.updatedAt) : "" }),
+    o.editable
+      ? el("button", { class: "tag-edit", type: "button", onclick: () => openForm(e), text: o.mine ? "Editar mi lista" : "Editar" })
+      : null);
+  const tag = el("div", { class: "tag" },
+    el("div", { class: "tag-hole", "aria-hidden": "true" }),
+    el("div", { class: "tag-head" },
+      el("div", { class: "avatar", "aria-hidden": "true", text: e.avatar }),
+      el("div", { class: "who" },
+        el("span", { class: "para", text: "Para:" }),
+        el("h3", { class: "tag-name", text: e.name })),
+      o.mine ? el("span", { class: "you", text: "Tú" }) : null),
+    section("wish", o.mine ? "Me gustaría" : "Le gustaría", e.wants),
+    e.avoid.length ? section("no", "Mejor no", e.avoid) : null,
+    foot,
+    o.example ? el("span", { class: "stamp", text: "Ejemplo" }) : null);
+  wrap.append(tag);
+  wrap.addEventListener("animationend", () => wrap.classList.remove("swing"));
+  return wrap;
+}
+
+function skeletonTag(i) {
+  return el("div", { class: "tag-wrap skel", style: `--tilt:${[-1, 1, -0.5][i]}deg`, "aria-hidden": "true" },
+    el("div", { class: "tag" },
+      el("div", { class: "tag-hole" }),
+      el("div", { class: "skel-bar", style: "width:62%;height:28px" }),
+      el("div", { class: "skel-bar", style: "width:88%" }),
+      el("div", { class: "skel-bar", style: "width:72%" }),
+      el("div", { class: "skel-bar", style: "width:80%" })));
+}
+
+function emptyState(canStart) {
+  const ex = tagNode({
+    id: "ejemplo-tia", name: "Tía Lupe", avatar: "🤶",
+    wants: ["Una bufanda tejida color vino", "Un libro de recetas mexicanas", "Macetas para su jardín"],
+    avoid: ["Chocolates, no los come"], updatedAt: 0
+  }, { example: true });
+  const off = S.available === false || S.failed;
+  return el("div", { class: "empty" },
+    el("div", null,
+      el("h3", { text: off ? "Así se ven las listas" : "Todavía nadie se ha anotado" }),
+      el("p", { text: off
+        ? "Cada familiar cuelga una etiqueta con lo que le gustaría recibir y, si quiere, lo que prefiere que no."
+        : "Sé el primero en colgar tu etiqueta. Toma menos de un minuto." }),
+      canStart && S.uid ? el("button", { class: "btn btn-primary", type: "button", onclick: openSelf, text: "Anotarme primero" }) : null),
+    ex);
+}
+
+/* ---------- render ---------- */
+let boardMode = null;
+const cache = new Map();
+function setMode(m) {
+  if (boardMode !== m) {
+    $("#board").replaceChildren();
+    boardMode = m;
+    if (m !== "tags") cache.clear();
+  }
+}
+const canEditEntry = (e) => S.available === true && !!S.uid && (e.id === S.uid || S.isAdmin);
+
+function renderBoard() {
+  const board = $("#board"), tally = $("#tally"), search = $("#search");
+  board.setAttribute("aria-busy", S.loaded || S.available === false ? "false" : "true");
+
+  if (S.available === false || S.failed) {
+    tally.textContent = ""; search.hidden = true;
+    setMode("off"); board.replaceChildren(emptyState(false));
+    return;
+  }
+  if (!S.loaded) {
+    tally.textContent = ""; search.hidden = true;
+    if (boardMode !== "loading") {
+      setMode("loading");
+      board.append(el("span", { class: "sr", text: "Cargando las listas…" }), skeletonTag(0), skeletonTag(1), skeletonTag(2));
+    }
+    return;
+  }
+
+  const n = S.entries.length;
+  tally.textContent = n === 0 ? "" : (n === 1 ? "1 familiar anotado" : `${n} familiares anotados`);
+  search.hidden = n <= 6;
+  if (search.hidden && S.search) { S.search = ""; search.value = ""; }
+
+  if (n === 0) { setMode("empty"); board.replaceChildren(emptyState(true)); return; }
+
+  const q = norm(S.search.trim());
+  const list = S.entries
+    .filter((e) => !q || norm(e.name).includes(q))
+    .sort((a, b) => ((b.id === S.uid) - (a.id === S.uid)) || a.name.localeCompare(b.name, "es", { sensitivity: "base" }));
+
+  if (!list.length) {
+    setMode("none");
+    board.replaceChildren(el("p", { class: "no-results", text: `No encontramos a nadie con “${S.search.trim()}”.` }));
+    return;
+  }
+
+  setMode("tags");
+  const desired = list.map((e) => {
+    const mine = e.id === S.uid, editable = canEditEntry(e);
+    const sig = JSON.stringify([e.name, e.avatar, e.wants, e.avoid, e.updatedAt, mine, editable]);
+    let c = cache.get(e.id);
+    if (!c || c.sig !== sig) { c = { sig, node: tagNode(e, { mine, editable }) }; cache.set(e.id, c); }
+    return c.node;
+  });
+  for (const id of [...cache.keys()]) if (!S.entries.some((e) => e.id === id)) cache.delete(id);
+  desired.forEach((node, i) => {
+    const cur = board.children[i];
+    if (cur !== node) board.insertBefore(node, cur || null);
+  });
+  while (board.children.length > desired.length) board.lastElementChild.remove();
+
+  if (S.animateAll) {
+    desired.forEach((node, i) => { node.style.setProperty("--d", Math.min(i, 10) * 80 + "ms"); node.classList.add("swing"); });
+    S.animateAll = false;
+  }
+  if (S.justSaved && cache.has(S.justSaved)) {
+    const node = cache.get(S.justSaved).node;
+    if (node.isConnected) {
+      node.classList.remove("swing"); void node.offsetWidth;
+      node.style.setProperty("--d", "0ms"); node.classList.add("swing");
+      node.scrollIntoView({ block: "center", behavior: reduceMotion ? "auto" : "smooth" });
+      S.justSaved = null;
+    }
+  }
+}
+
+function renderHeader() {
+  const ready = S.available === true && S.loaded && !S.failed && !!S.uid;
+  const mine = S.uid && S.entries.find((e) => e.id === S.uid);
+  const cta = $("#cta");
+  cta.textContent = mine ? "Editar mi lista" : "Anotarme";
+  cta.disabled = !ready;
+  $("#addOther").hidden = !(ready && S.isAdmin);
+  $("#adminBtn").hidden = !(S.available === true && S.uid && !S.isAdmin);
+  $("#footNote").textContent = S.isAdmin
+    ? "Estás en modo organizador en este dispositivo: puedes agregar familiares y editar o borrar cualquier lista."
+    : "Cada quien edita su lista desde el celular donde la creó. Si cambiaste de celular, pídele al organizador que te ayude.";
+}
+
+function renderNotice() {
+  let msg = null;
+  if (S.available === false) msg = S.setupMsg;
+  else if (S.failed) msg = S.failMsg;
+  else if (S.slow && !S.confirmed) msg = S.loaded
+    ? "Puede que estas listas no estén al día. Revisa tu conexión; seguimos intentando."
+    : "Estamos tardando en conectar. Revisa tu internet; seguimos intentando.";
+  const n = $("#notice");
+  n.hidden = !msg;
+  if (msg) n.querySelector("p").textContent = msg;
+}
+
+function renderAll() { renderHeader(); renderNotice(); renderBoard(); }
+
+/* ---------- formulario ---------- */
+const sheet = $("#sheet"), form = $("#form"), adminSheet = $("#adminSheet");
+
+function buildForm() {
+  const box = $("#avatars");
+  AVATARS.forEach((a, i) => {
+    box.append(el("label", { class: "av" },
+      el("input", { type: "radio", name: "avatar", value: a, id: "av" + i, "aria-label": "Figura " + (i + 1) }),
+      el("span", { "aria-hidden": "true", text: a })));
+  });
+  const ideas = $("#ideas");
+  IDEAS.forEach(([label, fill]) => {
+    ideas.append(el("button", {
+      type: "button", class: "idea", text: label,
+      onclick: () => {
+        const i = $("#fWish");
+        i.value = fill; i.focus();
+        try { i.setSelectionRange(fill.length, fill.length); } catch (e) {}
+      }
+    }));
+  });
+}
+function currentAvatar() {
+  const c = form.querySelector('input[name="avatar"]:checked');
+  return c ? c.value : "🎁";
+}
+function setAvatar(v) {
+  form.querySelectorAll('input[name="avatar"]').forEach((r) => { r.checked = r.value === v; });
+}
+
+function applyCopy() {
+  const self = S.editing.forSelf, isNew = S.editing.isNew;
+  $("#sheetTitle").textContent = self ? (isNew ? "Mi lista de Navidad" : "Editar mi lista") : (isNew ? "Agregar a un familiar" : "Editar lista");
+  $("#qName").textContent = self ? "¿Cómo te llamas?" : "¿Cómo se llama?";
+  $("#hName").textContent = self ? "Como te dice la familia: “Tía Lupe”, “Abuelo Beto”…" : "Como le dice la familia: “Abuela”, “Primo Iván”…";
+  $("#qAvatar").textContent = self ? "Elige tu figura" : "Elige su figura";
+  $("#qWish").textContent = self ? "¿Qué te gustaría recibir?" : "¿Qué le gustaría recibir?";
+  $("#qNo").textContent = self ? "¿Algo que prefieras no recibir?" : "¿Algo que prefiera no recibir?";
+  $("#saveBtn").textContent = self ? "Guardar mi lista" : "Guardar lista";
+}
+
+function renderPicked() {
+  const pairs = [[S.wants, $("#wishList")], [S.avoid, $("#noList")]];
+  for (const [arr, ul] of pairs) {
+    ul.replaceChildren(...arr.map((t, i) => el("li", null,
+      el("span", { text: t }),
+      el("button", {
+        type: "button", "aria-label": `Quitar “${t}”`, text: "×",
+        onclick: () => { arr.splice(i, 1); renderPicked(); }
+      }))));
+  }
+}
+
+function showErr(id, text) { const e = $(id); if (text) e.textContent = text; e.hidden = false; }
+function clearErrors() { ["#errName", "#errWish", "#errNo", "#formErr"].forEach((s) => { $(s).hidden = true; }); }
+
+function addItem(kind, focus) {
+  const input = kind === "wish" ? $("#fWish") : $("#fNo");
+  const arr = kind === "wish" ? S.wants : S.avoid;
+  const text = clean(input.value, MAX_LEN);
+  if (!text) { if (focus) input.focus(); return; }
+  if (arr.length >= MAX_ITEMS) { showErr(kind === "wish" ? "#errWish" : "#errNo", `Puedes agregar hasta ${MAX_ITEMS} cosas.`); return; }
+  if (!arr.some((x) => x.toLowerCase() === text.toLowerCase())) arr.push(text);
+  input.value = "";
+  if (kind === "wish") $("#errWish").hidden = true;
+  renderPicked();
+  if (focus) input.focus();
+}
+
+function showConfirm(on) {
+  $("#confirmDel").hidden = !on;
+  $("#footRow").hidden = on;
+  if (on) $("#confirmNo").focus();
+}
+
+function lockScroll(on) { document.body.style.overflow = on ? "hidden" : ""; }
+
+function openSelf() {
+  const mine = S.entries.find((e) => e.id === S.uid);
+  openForm(mine || null, true);
+}
+
+function openForm(entry, forSelfNew) {
+  if (S.available !== true || !S.uid) return;
+  const forSelf = entry ? entry.id === S.uid : !!forSelfNew;
+  let id;
+  if (entry) id = entry.id;
+  else if (forSelf) id = S.uid;
+  else id = S.fb.fs.doc(S.fb.fs.collection(S.fb.db, "familia")).id;
+  S.editing = { id, isNew: !entry, forSelf, createdAt: entry ? entry.createdAt : 0 };
+  $("#fName").value = entry ? entry.name : "";
+  setAvatar(entry ? entry.avatar : AVATARS[Math.floor(Math.random() * AVATARS.length)]);
+  S.wants = entry ? [...entry.wants] : [];
+  S.avoid = entry ? [...entry.avoid] : [];
+  $("#fWish").value = ""; $("#fNo").value = "";
+  applyCopy(); renderPicked(); clearErrors(); showConfirm(false);
+  $("#delBtn").hidden = S.editing.isNew;
+  S.lastFocus = document.activeElement;
+  sheet.hidden = false; lockScroll(true);
+  $("#sheetBody").scrollTop = 0;
+  setTimeout(() => {
+    if (S.editing && S.editing.isNew && !$("#fName").value) $("#fName").focus();
+    else $("#sheetTitle").focus();
+  }, 60);
+}
+
+function closeForm() {
+  if (sheet.hidden) return;
+  sheet.hidden = true; lockScroll(false);
+  S.editing = null;
+  const f = S.lastFocus; S.lastFocus = null;
+  if (f && f.isConnected && typeof f.focus === "function") f.focus({ preventScroll: true });
+}
+
+function formError(err) {
+  const code = err && err.code;
+  let msg = "No se pudo guardar. Revisa tu internet e inténtalo de nuevo.";
+  if (code === "permission-denied") msg = "No se pudo guardar: esta lista solo se puede editar desde el celular donde se creó. Pídele ayuda al organizador.";
+  else if (code === "resource-exhausted") msg = "Se llegó al límite gratis de hoy. Inténtalo de nuevo mañana.";
+  else if (code === "invalid-argument") msg = "Algo en la lista no es válido. Revisa el texto e inténtalo de nuevo.";
+  showErr("#formErr", msg);
+}
+
+form.addEventListener("submit", async (ev) => {
+  ev.preventDefault();
+  if (!S.editing || S.saving) return;
+  addItem("wish", false);
+  addItem("no", false);
+  clearErrors();
+  const name = clean($("#fName").value, MAX_NAME);
+  let first = null;
+  if (!name) { showErr("#errName"); first = first || $("#fName"); }
+  if (!S.wants.length) { showErr("#errWish"); first = first || $("#fWish"); }
+  if (first) { first.focus(); first.scrollIntoView({ block: "center", behavior: reduceMotion ? "auto" : "smooth" }); return; }
+
+  const ed = S.editing;
+  const body = {
+    name, avatar: currentAvatar(),
+    wants: [...S.wants], avoid: [...S.avoid],
+    updatedAt: Date.now(), createdAt: ed.createdAt || Date.now()
+  };
+  const btn = $("#saveBtn"), label = btn.textContent;
+  S.saving = true; btn.disabled = true; btn.textContent = "Guardando…";
+  try {
+    await withTimeout(S.fb.fs.setDoc(listRef(ed.id), body), 15000);
+    S.justSaved = ed.id;
+    S.search = ""; $("#search").value = "";
+    closeForm();
+    toast(ed.forSelf ? (ed.isNew ? "¡Listo! Tu etiqueta ya está colgada." : "Tu lista se actualizó.") : `Lista de ${name} guardada.`);
+    renderAll();
+  } catch (err) {
+    formError(err);
+  } finally {
+    S.saving = false; btn.disabled = false; btn.textContent = label;
+  }
+});
+
+/* ---------- modo organizador ---------- */
+function openAdmin() {
+  if (S.available !== true || !S.uid) return;
+  $("#fClave").value = ""; $("#errClave").hidden = true;
+  S.lastFocus = document.activeElement;
+  adminSheet.hidden = false; lockScroll(true);
+  setTimeout(() => $("#fClave").focus(), 60);
+}
+function closeAdmin() {
+  if (adminSheet.hidden) return;
+  adminSheet.hidden = true; lockScroll(false);
+  const f = S.lastFocus; S.lastFocus = null;
+  if (f && f.isConnected && typeof f.focus === "function") f.focus({ preventScroll: true });
+}
+$("#adminForm").addEventListener("submit", async (ev) => {
+  ev.preventDefault();
+  const clave = $("#fClave").value.trim();
+  if (!clave) { showErr("#errClave", "Escribe la clave."); return; }
+  const btn = $("#claveBtn");
+  btn.disabled = true; btn.textContent = "Revisando…";
+  try {
+    await withTimeout(S.fb.fs.setDoc(S.fb.fs.doc(S.fb.db, "admins", S.uid), { clave }), 15000);
+    S.isAdmin = true;
+    closeAdmin();
+    toast("Listo, ya eres organizador en este dispositivo.");
+    renderAll();
+  } catch (err) {
+    showErr("#errClave", err && err.code === "permission-denied" ? "Esa clave no es correcta." : "No se pudo revisar la clave. Revisa tu internet.");
+  } finally {
+    btn.disabled = false; btn.textContent = "Entrar";
+  }
+});
+
+/* ---------- conexión con Firebase ---------- */
+function setupMessage(e) {
+  const c = (e && e.code) || "";
+  if (c === "auth/operation-not-allowed" || c === "auth/admin-restricted-operation")
+    return "Falta activar el acceso anónimo en Firebase (Authentication → Método de acceso → Anónimo).";
+  if (c === "auth/unauthorized-domain")
+    return "Falta autorizar este dominio en Firebase (Authentication → Configuración → Dominios autorizados).";
+  if (c.startsWith("auth/invalid-api-key") || c.startsWith("auth/api-key-not-valid"))
+    return "La configuración de Firebase no es válida. Vuelve a copiar el firebaseConfig.";
+  if (c === "auth/network-request-failed")
+    return "No hay conexión a internet. Revisa tu señal y vuelve a abrir la página.";
+  return "No pudimos conectar. Vuelve a abrir la página en un momento.";
+}
+
+function subscribe() {
+  const { fs, db } = S.fb;
+  S.slowTimer = setTimeout(() => { S.slow = true; renderNotice(); }, 10000);
+  fs.onSnapshot(fs.collection(db, "familia"), (snap) => {
+    S.loaded = true;
+    S.entries = snap.docs.map(cleanEntry);
+    if (!snap.metadata || !snap.metadata.fromCache) { S.confirmed = true; S.slow = false; clearTimeout(S.slowTimer); }
+    renderAll();
+  }, (err) => {
+    clearTimeout(S.slowTimer);
+    S.slow = false; S.loaded = true; S.failed = true;
+    const c = err && err.code;
+    S.failMsg = c === "permission-denied" ? "No hay permiso para leer las listas. Revisa que publicaste las reglas de Firestore."
+      : (c === "not-found" || c === "failed-precondition") ? "Falta crear la base de datos de Firestore en tu proyecto de Firebase."
+      : c === "resource-exhausted" ? "Se llegó al límite gratis de hoy. Vuelve a abrir la página mañana."
+      : "No pudimos cargar las listas. Recarga la página para intentarlo de nuevo.";
+    renderAll();
+  });
+}
+
+async function checkAdmin() {
+  try {
+    const s = await S.fb.fs.getDoc(S.fb.fs.doc(S.fb.db, "admins", S.uid));
+    S.isAdmin = s.exists();
+  } catch (e) { S.isAdmin = false; }
+  if (S.isAdmin) renderAll();
+}
+
+async function init() {
+  if (Object.values(firebaseConfig).some((v) => !v || String(v).includes("PEGA_AQUI"))) {
+    S.available = false;
+    S.setupMsg = "Falta pegar la configuración de Firebase en el archivo index.html (busca donde dice PEGA_AQUI).";
+    renderAll(); return;
+  }
+  let appMod, authMod, fs;
+  try {
+    const base = `https://www.gstatic.com/firebasejs/${FIREBASE_VERSION}/`;
+    [appMod, authMod, fs] = await Promise.all([
+      import(base + "firebase-app.js"), import(base + "firebase-auth.js"), import(base + "firebase-firestore.js")
+    ]);
+  } catch (e) {
+    S.available = false;
+    S.setupMsg = "No se pudo cargar la página. Revisa tu internet y vuelve a abrirla.";
+    renderAll(); return;
+  }
+  try {
+    const app = appMod.initializeApp(firebaseConfig);
+    const auth = authMod.getAuth(app);
+    S.fb = { fs, db: fs.getFirestore(app) };
+    if (typeof auth.authStateReady === "function") await auth.authStateReady();
+    else await new Promise((r) => { const off = authMod.onAuthStateChanged(auth, () => { off(); r(); }); });
+    const user = auth.currentUser || (await authMod.signInAnonymously(auth)).user;
+    S.uid = user.uid;
+  } catch (e) {
+    S.available = false; S.setupMsg = setupMessage(e);
+    renderAll(); return;
+  }
+  S.available = true;
+  renderAll();
+  subscribe();
+  checkAdmin();
+}
+
+/* ---------- eventos ---------- */
+function wire() {
+  buildForm();
+  $("#cta").addEventListener("click", openSelf);
+  $("#addOther").addEventListener("click", () => openForm(null, false));
+  $("#adminBtn").addEventListener("click", openAdmin);
+  $("#addWish").addEventListener("click", () => addItem("wish", true));
+  $("#addNo").addEventListener("click", () => addItem("no", true));
+  $("#fWish").addEventListener("keydown", (e) => { if (e.key === "Enter" && !e.isComposing) { e.preventDefault(); addItem("wish", true); } });
+  $("#fNo").addEventListener("keydown", (e) => { if (e.key === "Enter" && !e.isComposing) { e.preventDefault(); addItem("no", true); } });
+  $("#fName").addEventListener("keydown", (e) => { if (e.key === "Enter" && !e.isComposing) { e.preventDefault(); $("#fWish").focus(); } });
+  $("#fName").addEventListener("input", () => { $("#errName").hidden = true; });
+  sheet.querySelectorAll("[data-close]").forEach((b) => b.addEventListener("click", closeForm));
+  adminSheet.querySelectorAll("[data-close-admin]").forEach((b) => b.addEventListener("click", closeAdmin));
+  $("#delBtn").addEventListener("click", () => showConfirm(true));
+  $("#confirmNo").addEventListener("click", () => { showConfirm(false); $("#delBtn").focus(); });
+  $("#confirmYes").addEventListener("click", async () => {
+    if (!S.editing) return;
+    const id = S.editing.id, btn = $("#confirmYes");
+    btn.disabled = true;
+    try {
+      await withTimeout(S.fb.fs.deleteDoc(listRef(id)), 15000);
+      closeForm();
+      toast("Lista borrada.");
+    } catch (err) {
+      showConfirm(false); formError(err);
+    } finally { btn.disabled = false; }
+  });
+  document.addEventListener("keydown", (e) => {
+    if (e.key !== "Escape") return;
+    if (!adminSheet.hidden) { closeAdmin(); return; }
+    if (sheet.hidden) return;
+    if (!$("#confirmDel").hidden) showConfirm(false); else closeForm();
+  });
+  $("#search").addEventListener("input", (e) => { S.search = e.target.value; renderBoard(); });
+  setInterval(() => {
+    document.querySelectorAll("[data-ts]").forEach((s) => { s.textContent = "Actualizado " + relTime(+s.dataset.ts); });
+  }, 60000);
+  setInterval(renderCountdown, 3600000);
+}
+
+/* ---------- nieve ---------- */
+function snow() {
+  const c = $("#snow"), ctx = c.getContext && c.getContext("2d");
+  if (!ctx) return;
+  let w = 0, h = 0, flakes = [];
+  const mk = (anyY) => ({
+    x: Math.random() * w, y: anyY ? Math.random() * h : -6,
+    r: Math.random() * 2.1 + 0.6, s: Math.random() * 0.45 + 0.2,
+    p: Math.random() * Math.PI * 2, a: Math.random() * 0.45 + 0.3
+  });
+  function size() {
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    w = window.innerWidth; h = window.innerHeight;
+    c.width = Math.round(w * dpr); c.height = Math.round(h * dpr);
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    const target = Math.round(Math.min(120, (w * h) / 12000));
+    while (flakes.length < target) flakes.push(mk(true));
+    flakes.length = target;
+    for (const f of flakes) { if (f.x > w) f.x = Math.random() * w; if (f.y > h) f.y = Math.random() * h; }
+    draw();
+  }
+  function draw() {
+    ctx.clearRect(0, 0, w, h);
+    ctx.fillStyle = "#ffffff";
+    for (const f of flakes) {
+      ctx.globalAlpha = f.a;
+      ctx.beginPath(); ctx.arc(f.x, f.y, f.r, 0, Math.PI * 2); ctx.fill();
+    }
+    ctx.globalAlpha = 1;
+  }
+  function step() {
+    for (const f of flakes) {
+      f.y += f.s * (f.r * 0.55 + 0.45);
+      f.p += 0.012;
+      f.x += Math.sin(f.p) * 0.28;
+      if (f.y > h + 6) Object.assign(f, mk(false));
+    }
+    draw();
+    requestAnimationFrame(step);
+  }
+  let rt;
+  window.addEventListener("resize", () => { clearTimeout(rt); rt = setTimeout(size, 120); });
+  size();
+  if (!reduceMotion) requestAnimationFrame(step);
+}
+
+/* ---------- arranque ---------- */
+renderCountdown();
+wire();
+renderAll();
+snow();
+init();
+})();
+</script>
+</body>
+</html>
