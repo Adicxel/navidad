@@ -38,6 +38,7 @@
   color-scheme: dark;
 }
 *{box-sizing:border-box}
+[hidden]{display:none !important}
 html{height:100%;-webkit-text-size-adjust:100%}
 body{margin:0;min-height:100%;background:var(--pine);color:var(--snow);font-family:var(--font-body);font-size:17px;line-height:1.5}
 .sky{position:fixed;inset:0;z-index:0;pointer-events:none;
@@ -108,7 +109,8 @@ h1 .hand{display:block;font-family:var(--font-hand);font-weight:700;color:var(--
 .who{min-width:0}
 .para{display:block;font-family:var(--font-hand);font-size:20px;color:var(--ink-soft);line-height:1}
 .tag-name{font-family:var(--font-hand);font-weight:700;font-size:34px;line-height:1.02;margin:2px 0 0;overflow-wrap:anywhere}
-.you{margin-left:auto;align-self:flex-start;font-size:12px;font-weight:800;letter-spacing:.07em;text-transform:uppercase;background:var(--gold);color:var(--pine);padding:3px 10px;border-radius:999px}
+.you{flex:none;margin-left:auto;align-self:flex-start;font-size:12px;font-weight:800;letter-spacing:.07em;text-transform:uppercase;background:var(--gold);color:var(--pine);padding:3px 10px;border-radius:999px}
+.you.by{background:var(--wish-bg);color:var(--wish-ink);text-transform:none;letter-spacing:0;font-size:12.5px}
 .sec-title{font-size:12px;font-weight:800;letter-spacing:.09em;text-transform:uppercase;margin:14px 0 6px}
 .sec-title.wish{color:var(--wish-ink)}
 .sec-title.no{color:var(--no-ink)}
@@ -227,7 +229,7 @@ legend.q{float:left;width:100%}
         <p class="lede">Anótate y escribe qué te gustaría recibir. Si quieres, también lo que prefieres que no te regalen. Así todos le atinan al regalo.</p>
         <div class="hero-actions">
           <button id="cta" class="btn btn-primary btn-lg" type="button" disabled>Anotarme</button>
-          <button id="addOther" class="btn btn-ghost" type="button" hidden>Agregar a otro familiar</button>
+          <button id="addOther" class="btn btn-ghost" type="button" hidden>Anotar a alguien más</button>
         </div>
         <ol class="steps" aria-label="Cómo funciona">
           <li><b>1</b>Escribe tu nombre</li>
@@ -341,7 +343,7 @@ legend.q{float:left;width:100%}
       <button type="button" class="icon-btn" data-close-admin aria-label="Cerrar">×</button>
     </div>
     <div class="sheet-body">
-      <p class="admin-intro">Con la clave podrás agregar a familiares que no usen celular y corregir cualquier lista desde este dispositivo.</p>
+      <p class="admin-intro">Con la clave podrás editar o borrar cualquier lista desde este dispositivo, aunque no la hayas anotado tú.</p>
       <label for="fClave" class="q">Clave de organizador</label>
       <input id="fClave" class="txt" type="password" autocomplete="off" enterkeyhint="go">
       <p class="err" id="errClave" hidden>Esa clave no es correcta.</p>
@@ -381,7 +383,7 @@ const FIREBASE_VERSION = "12.19.0";
 const AVATARS = ["🎅","🤶","⛄","🦌","🐧","🎄","⭐","🎁","🍪","🔔","🐱","🐶"];
 const IDEAS = [
   ["Un libro", "Un libro de "],
-  ["Ropa (con tu talla)", "Ropa talla "],
+  ["Ropa (con tu talla)", "Ropa "],
   ["Perfume", "Un perfume "],
   ["Algo para la cocina", "Algo para la cocina: "],
   ["Una experiencia juntos", "Una experiencia juntos: "],
@@ -496,7 +498,8 @@ function cleanEntry(doc) {
     wants: cleanList(d.wants),
     avoid: cleanList(d.avoid),
     updatedAt: Number.isFinite(d.updatedAt) ? d.updatedAt : 0,
-    createdAt: Number.isFinite(d.createdAt) ? d.createdAt : 0
+    createdAt: Number.isFinite(d.createdAt) ? d.createdAt : 0,
+    owner: (typeof d.owner === "string" && d.owner) ? d.owner : doc.id
   };
 }
 const listRef = (id) => S.fb.fs.doc(S.fb.db, "familia", id);
@@ -531,7 +534,8 @@ function tagNode(e, opts) {
       el("div", { class: "who" },
         el("span", { class: "para", text: "Para:" }),
         el("h3", { class: "tag-name", text: e.name })),
-      o.mine ? el("span", { class: "you", text: "Tú" }) : null),
+      o.mine ? el("span", { class: "you", text: "Tú" })
+        : o.byMe ? el("span", { class: "you by", text: "La anotaste tú" }) : null),
     section("wish", o.mine ? "Me gustaría" : "Le gustaría", e.wants),
     e.avoid.length ? section("no", "Mejor no", e.avoid) : null,
     foot,
@@ -578,7 +582,7 @@ function setMode(m) {
     if (m !== "tags") cache.clear();
   }
 }
-const canEditEntry = (e) => S.available === true && !!S.uid && (e.id === S.uid || S.isAdmin);
+const canEditEntry = (e) => S.available === true && !!S.uid && (e.owner === S.uid || S.isAdmin);
 
 function renderBoard() {
   const board = $("#board"), tally = $("#tally"), search = $("#search");
@@ -618,10 +622,10 @@ function renderBoard() {
 
   setMode("tags");
   const desired = list.map((e) => {
-    const mine = e.id === S.uid, editable = canEditEntry(e);
-    const sig = JSON.stringify([e.name, e.avatar, e.wants, e.avoid, e.updatedAt, mine, editable]);
+    const mine = e.id === S.uid, byMe = !mine && e.owner === S.uid, editable = canEditEntry(e);
+    const sig = JSON.stringify([e.name, e.avatar, e.wants, e.avoid, e.updatedAt, mine, byMe, editable]);
     let c = cache.get(e.id);
-    if (!c || c.sig !== sig) { c = { sig, node: tagNode(e, { mine, editable }) }; cache.set(e.id, c); }
+    if (!c || c.sig !== sig) { c = { sig, node: tagNode(e, { mine, byMe, editable }) }; cache.set(e.id, c); }
     return c.node;
   });
   for (const id of [...cache.keys()]) if (!S.entries.some((e) => e.id === id)) cache.delete(id);
@@ -652,11 +656,11 @@ function renderHeader() {
   const cta = $("#cta");
   cta.textContent = mine ? "Editar mi lista" : "Anotarme";
   cta.disabled = !ready;
-  $("#addOther").hidden = !(ready && S.isAdmin);
+  $("#addOther").hidden = !ready;
   $("#adminBtn").hidden = !(S.available === true && S.uid && !S.isAdmin);
   $("#footNote").textContent = S.isAdmin
-    ? "Estás en modo organizador en este dispositivo: puedes agregar familiares y editar o borrar cualquier lista."
-    : "Cada quien edita su lista desde el celular donde la creó. Si cambiaste de celular, pídele al organizador que te ayude.";
+    ? "Estás en modo organizador en este dispositivo: puedes editar o borrar cualquier lista."
+    : "Cada quien puede editar las listas que anotó, desde el mismo celular. Si cambiaste de celular, pídele ayuda al organizador.";
 }
 
 function renderNotice() {
@@ -705,9 +709,9 @@ function setAvatar(v) {
 
 function applyCopy() {
   const self = S.editing.forSelf, isNew = S.editing.isNew;
-  $("#sheetTitle").textContent = self ? (isNew ? "Mi lista de Navidad" : "Editar mi lista") : (isNew ? "Agregar a un familiar" : "Editar lista");
+  $("#sheetTitle").textContent = self ? (isNew ? "Mi lista de Navidad" : "Editar mi lista") : (isNew ? "Anotar a alguien más" : "Editar lista");
   $("#qName").textContent = self ? "¿Cómo te llamas?" : "¿Cómo se llama?";
-  $("#hName").textContent = self ? "Como te dice la familia: “Tía Lupe”, “Abuelo Beto”…" : "Como le dice la familia: “Abuela”, “Primo Iván”…";
+  $("#hName").textContent = self ? "Como te dice la familia: “Tía Lupe”, “Abuelo Beto”…" : "Por ejemplo: “Sofi (mi hija)”, “Abuelo Beto”…";
   $("#qAvatar").textContent = self ? "Elige tu figura" : "Elige su figura";
   $("#qWish").textContent = self ? "¿Qué te gustaría recibir?" : "¿Qué le gustaría recibir?";
   $("#qNo").textContent = self ? "¿Algo que prefieras no recibir?" : "¿Algo que prefiera no recibir?";
@@ -762,7 +766,7 @@ function openForm(entry, forSelfNew) {
   if (entry) id = entry.id;
   else if (forSelf) id = S.uid;
   else id = S.fb.fs.doc(S.fb.fs.collection(S.fb.db, "familia")).id;
-  S.editing = { id, isNew: !entry, forSelf, createdAt: entry ? entry.createdAt : 0 };
+  S.editing = { id, isNew: !entry, forSelf, createdAt: entry ? entry.createdAt : 0, owner: entry ? entry.owner : S.uid };
   $("#fName").value = entry ? entry.name : "";
   setAvatar(entry ? entry.avatar : AVATARS[Math.floor(Math.random() * AVATARS.length)]);
   S.wants = entry ? [...entry.wants] : [];
@@ -790,7 +794,7 @@ function closeForm() {
 function formError(err) {
   const code = err && err.code;
   let msg = "No se pudo guardar. Revisa tu internet e inténtalo de nuevo.";
-  if (code === "permission-denied") msg = "No se pudo guardar: esta lista solo se puede editar desde el celular donde se creó. Pídele ayuda al organizador.";
+  if (code === "permission-denied") msg = "No se pudo guardar: esta lista solo se puede editar desde el celular donde se anotó. Pídele ayuda al organizador.";
   else if (code === "resource-exhausted") msg = "Se llegó al límite gratis de hoy. Inténtalo de nuevo mañana.";
   else if (code === "invalid-argument") msg = "Algo en la lista no es válido. Revisa el texto e inténtalo de nuevo.";
   showErr("#formErr", msg);
@@ -812,7 +816,8 @@ form.addEventListener("submit", async (ev) => {
   const body = {
     name, avatar: currentAvatar(),
     wants: [...S.wants], avoid: [...S.avoid],
-    updatedAt: Date.now(), createdAt: ed.createdAt || Date.now()
+    updatedAt: Date.now(), createdAt: ed.createdAt || Date.now(),
+    owner: ed.owner || S.uid
   };
   const btn = $("#saveBtn"), label = btn.textContent;
   S.saving = true; btn.disabled = true; btn.textContent = "Guardando…";
