@@ -204,7 +204,8 @@ legend.q{float:left;width:100%}
 
 @media (max-width:420px){
   .wrap{padding:0 16px}
-  .avatars{grid-template-columns:repeat(4,1fr)}
+  .avatars{gap:6px}
+  .av span{font-size:24px;border-radius:12px}
   .hint{margin-left:0}
   .btn-lg{width:100%}
   .hero-actions .btn-ghost{width:100%}
@@ -281,7 +282,7 @@ legend.q{float:left;width:100%}
     <div class="sheet-body" id="sheetBody">
       <div class="field">
         <label for="fName" class="q"><span class="qn">1</span><span id="qName">¿Cómo te llamas?</span></label>
-        <p class="hint" id="hName">Como te dice la familia: “Tía Lupe”, “Abuelo Beto”…</p>
+        <p class="hint" id="hName">Como te dice la familia, por ejemplo “Tía”, “Abue” o tu apodo.</p>
         <input id="fName" class="txt" type="text" maxlength="40" autocomplete="off" enterkeyhint="next">
         <p class="err" id="errName" hidden>Escribe un nombre para que sepan de quién es la lista.</p>
       </div>
@@ -295,7 +296,7 @@ legend.q{float:left;width:100%}
         <label for="fWish" class="q"><span class="qn">3</span><span id="qWish">¿Qué te gustaría recibir?</span></label>
         <p class="hint">Escribe una idea y toca <b>Agregar</b>. Puedes agregar varias, o pegar el enlace de la tienda.</p>
         <div class="adder">
-          <input id="fWish" class="txt" type="text" maxlength="140" placeholder="Ej. Unos audífonos inalámbricos" autocomplete="off">
+          <input id="fWish" class="txt" type="text" maxlength="400" placeholder="Ej. Unos audífonos inalámbricos" autocomplete="off">
           <button type="button" class="btn btn-add" id="addWish">Agregar</button>
         </div>
         <div class="ideas" id="ideas"><span>¿Sin ideas? Toca una:</span></div>
@@ -307,7 +308,7 @@ legend.q{float:left;width:100%}
         <label for="fNo" class="q"><span class="qn">4</span><span id="qNo">¿Algo que prefieras no recibir?</span><span class="opt">Opcional</span></label>
         <p class="hint">Así nadie regala algo que no se va a usar. Puedes dejarlo vacío.</p>
         <div class="adder">
-          <input id="fNo" class="txt" type="text" maxlength="140" placeholder="Ej. Más tazas, ya tengo muchas" autocomplete="off">
+          <input id="fNo" class="txt" type="text" maxlength="400" placeholder="Ej. Más tazas, ya tengo muchas" autocomplete="off">
           <button type="button" class="btn btn-add" id="addNo">Agregar</button>
         </div>
         <ul class="picked no" id="noList"></ul>
@@ -380,7 +381,7 @@ const firebaseConfig = {
 /* ==================================================================== */
 
 const FIREBASE_VERSION = "12.19.0";
-const AVATARS = ["🎅","🤶","⛄","🦌","🐧","🎄","⭐","🎁","🍪","🔔","🐱","🐶"];
+const AVATARS = ["🎅","🤶","🧑‍🎄","🦌","🐧","🐻‍❄️","🦊","🐱","🐶","⛄","🎄","⭐","🎁","🍪","🔔","❄️","🧦","🧣","🎀","🪅","🕯️","☕","🛷","🎶"];
 const IDEAS = [
   ["Un libro", "Un libro de "],
   ["Ropa (con tu talla)", "Ropa "],
@@ -390,7 +391,7 @@ const IDEAS = [
   ["Tarjeta de regalo", "Tarjeta de regalo de "],
   ["Algo hecho a mano", "Algo hecho a mano"]
 ];
-const MAX_ITEMS = 25, MAX_LEN = 140, MAX_NAME = 40;
+const MAX_ITEMS = 25, MAX_LEN = 400, MAX_NAME = 40;
 const reduceMotion = window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches;
 const $ = (s) => document.querySelector(s);
 
@@ -557,7 +558,7 @@ function skeletonTag(i) {
 
 function emptyState(canStart) {
   const ex = tagNode({
-    id: "ejemplo-tia", name: "Tía Lupe", avatar: "🤶",
+    id: "ejemplo-tia", name: "La tía consentida", avatar: "🤶",
     wants: ["Una bufanda tejida color vino", "Un libro de recetas mexicanas", "Macetas para su jardín"],
     avoid: ["Chocolates, no los come"], updatedAt: 0
   }, { example: true });
@@ -711,7 +712,7 @@ function applyCopy() {
   const self = S.editing.forSelf, isNew = S.editing.isNew;
   $("#sheetTitle").textContent = self ? (isNew ? "Mi lista de Navidad" : "Editar mi lista") : (isNew ? "Anotar a alguien más" : "Editar lista");
   $("#qName").textContent = self ? "¿Cómo te llamas?" : "¿Cómo se llama?";
-  $("#hName").textContent = self ? "Como te dice la familia: “Tía Lupe”, “Abuelo Beto”…" : "Por ejemplo: “Sofi (mi hija)”, “Abuelo Beto”…";
+  $("#hName").textContent = self ? "Como te dice la familia, por ejemplo “Tía”, “Abue” o tu apodo." : "Como le dice la familia, por ejemplo “Mi hija” o su apodo.";
   $("#qAvatar").textContent = self ? "Elige tu figura" : "Elige su figura";
   $("#qWish").textContent = self ? "¿Qué te gustaría recibir?" : "¿Qué le gustaría recibir?";
   $("#qNo").textContent = self ? "¿Algo que prefieras no recibir?" : "¿Algo que prefiera no recibir?";
@@ -722,7 +723,7 @@ function renderPicked() {
   const pairs = [[S.wants, $("#wishList")], [S.avoid, $("#noList")]];
   for (const [arr, ul] of pairs) {
     ul.replaceChildren(...arr.map((t, i) => el("li", null,
-      el("span", { text: t }),
+      el("span", null, richText(t)),
       el("button", {
         type: "button", "aria-label": `Quitar “${t}”`, text: "×",
         onclick: () => { arr.splice(i, 1); renderPicked(); }
