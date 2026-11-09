@@ -199,6 +199,20 @@ legend.q{float:left;width:100%}
 .foot p{margin:0 0 6px}
 .sheet-panel.small{max-width:440px}
 .admin-intro{margin:16px 0 18px;color:var(--ink-soft)}
+.countdown{max-width:100%}
+.countdown.egg{border-radius:14px;align-items:flex-start;line-height:1.35;max-width:560px;padding:8px 14px 8px 10px}
+.countdown.egg svg{margin-top:3px}
+h1,.hero-tag{-webkit-user-select:none;user-select:none;touch-action:manipulation;-webkit-tap-highlight-color:transparent}
+.egg-panel{text-align:center}
+.egg-body{padding:30px 22px calc(24px + env(safe-area-inset-bottom))}
+.egg-kicker{margin:0 0 4px;font-family:var(--font-hand);font-weight:700;font-size:26px;color:var(--berry)}
+.egg-title{font-family:var(--font-display);font-weight:400;font-size:clamp(1.9rem,8.5vw,2.5rem);line-height:1.08;margin:0 0 14px;outline:none;text-wrap:balance}
+.egg-text{margin:0 auto 20px;max-width:34ch;color:var(--ink-soft);font-size:17px}
+.egg-actions{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:6px}
+.egg-actions .btn{min-width:140px}
+@keyframes shake{0%,100%{transform:translateX(0)}20%{transform:translateX(-10px)}40%{transform:translateX(9px)}60%{transform:translateX(-6px)}80%{transform:translateX(4px)}}
+.shake{animation:shake .5s ease}
+@media (prefers-reduced-motion: reduce){.shake{animation:none}}
 .toast{position:fixed;left:50%;top:16px;transform:translate(-50%,-20px);opacity:0;z-index:60;background:var(--paper);color:var(--ink);font-weight:800;padding:12px 20px;border-radius:999px;box-shadow:0 10px 30px rgba(0,0,0,.35);transition:opacity .3s, transform .3s;pointer-events:none;max-width:calc(100% - 32px);text-align:center}
 .toast.show{opacity:1;transform:translate(-50%,0)}
 
@@ -225,7 +239,7 @@ legend.q{float:left;width:100%}
   <header class="hero">
     <div class="wrap hero-grid">
       <div>
-        <p class="countdown"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2l2.9 6.3 6.9.8-5.1 4.7 1.4 6.8L12 17.2l-6.1 3.4 1.4-6.8L2.2 9.1l6.9-.8z"/></svg><span id="countdown">Faltan pocos días para Nochebuena</span></p>
+        <p class="countdown" id="countdownPill"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2l2.9 6.3 6.9.8-5.1 4.7 1.4 6.8L12 17.2l-6.1 3.4 1.4-6.8L2.2 9.1l6.9-.8z"/></svg><span id="countdown">Faltan pocos días para Nochebuena</span></p>
         <h1>Deseos de Navidad <span class="hand">de toda la familia</span></h1>
         <p class="lede">Anótate y escribe qué te gustaría recibir. Si quieres, también lo que prefieres que no te regalen. Así todos le atinan al regalo.</p>
         <div class="hero-actions">
@@ -360,6 +374,24 @@ legend.q{float:left;width:100%}
   </form>
 </div>
 
+<div id="eggSheet" class="sheet" hidden>
+  <div class="sheet-backdrop" data-close-egg></div>
+  <div class="sheet-panel small egg-panel" id="eggPanel" role="dialog" aria-modal="true" aria-labelledby="eggTitle">
+    <div class="egg-body">
+      <p class="egg-kicker" id="eggKicker">¡Es hoy, es hoy!</p>
+      <h2 class="egg-title" id="eggTitle" tabindex="-1">¿Ya compraste el regalo?</h2>
+      <p class="egg-text" id="eggText" hidden></p>
+      <div class="egg-actions" id="eggAsk">
+        <button type="button" class="btn btn-quiet" id="eggNo">😬 Este… no</button>
+        <button type="button" class="btn btn-primary" id="eggYes">😎 Obvio</button>
+      </div>
+      <div class="egg-actions" id="eggDone" hidden>
+        <button type="button" class="btn btn-primary" data-close-egg>Cerrar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <div id="toast" class="toast" role="status" aria-live="polite"></div>
 
 <script>
@@ -461,27 +493,67 @@ function tiltFor(id) {
   return ((Math.abs(h) % 7) - 3) * 0.55;
 }
 
-function christmasInfo() {
-  const now = new Date();
-  const y = now.getFullYear(), m = now.getMonth(), d = now.getDate();
-  if (m === 11 && d === 24) return { text: "¡Hoy es Nochebuena!", year: y };
-  if (m === 11 && d === 25) return { text: "¡Feliz Navidad!", year: y };
-  const ty = (m === 11 && d > 25) ? y + 1 : y;
-  const days = Math.round((new Date(ty, 11, 24) - new Date(y, m, d)) / 86400000);
-  return { text: days === 1 ? "Mañana es Nochebuena" : `Faltan ${days} días para Nochebuena`, year: ty };
-}
-function renderCountdown() {
-  const c = christmasInfo();
-  $("#countdown").textContent = c.text;
-  $("#heroYear").textContent = "Navidad " + c.year;
+/* ===================== FECHA DEL INTERCAMBIO =====================
+   Si el intercambio no es el 24 de diciembre, cambia aquí el día.    */
+const INTERCAMBIO = { mes: 12, dia: 24 };
+/* ================================================================== */
+
+const DIA_MS = 86400000;
+const hoyReal = () => { const n = new Date(); return new Date(n.getFullYear(), n.getMonth(), n.getDate()); };
+const fechaIntercambio = (y) => new Date(y, INTERCAMBIO.mes - 1, INTERCAMBIO.dia);
+const masDias = (f, n) => new Date(f.getFullYear(), f.getMonth(), f.getDate() + n);
+const diasEntre = (a, b) => Math.round((b - a) / DIA_MS);
+
+/* Modo prueba: agrega #prueba-dia (u otro de estos) al final del enlace. */
+const PRUEBAS = {
+  "prueba-diciembre": (y) => new Date(y, 11, 1),
+  "prueba-posadas": (y) => new Date(y, 11, 16),
+  "prueba-semana": (y) => masDias(fechaIntercambio(y), -7),
+  "prueba-5dias": (y) => masDias(fechaIntercambio(y), -5),
+  "prueba-3dias": (y) => masDias(fechaIntercambio(y), -3),
+  "prueba-vispera": (y) => masDias(fechaIntercambio(y), -1),
+  "prueba-dia": (y) => fechaIntercambio(y),
+  "prueba-navidad": (y) => new Date(y, 11, 25),
+  "prueba-despues": (y) => new Date(y, 11, 27)
+};
+function fechaActual() {
+  const real = hoyReal();
+  const f = PRUEBAS[location.hash.slice(1)];
+  return f ? { fecha: f(real.getFullYear()), prueba: true } : { fecha: real, prueba: false };
 }
 
-function toast(msg) {
+function mensajeDelDia(t) {
+  const y = t.getFullYear(), m = t.getMonth(), dd = t.getDate();
+  const d = diasEntre(t, fechaIntercambio(y));
+  const evento = (INTERCAMBIO.mes === 12 && INTERCAMBIO.dia === 24) ? "Nochebuena" : "el intercambio";
+  const r = (text, extra) => Object.assign({ text, egg: true, year: y }, extra || {});
+  if (d === 0) return r("¡Hoy es el intercambio! 🎁", { dia: true });
+  if (m === 11 && dd === 25) return r("¡Feliz Navidad! Si te regalaron algo de tu lista de “Mejor no”, haz como que te gustó.");
+  if (d < 0) return r(`Ya pasó. Ve calentando para el próximo año: faltan ${diasEntre(t, fechaIntercambio(y + 1))} días.`);
+  if (d === 1) return r("Mañana es el intercambio. Tranquilo, el Oxxo abre 24 horas.");
+  if (d <= 3) return r(`Faltan ${d} días. Las plazas te esperan con los brazos abiertos (y sin estacionamiento).`);
+  if (d === 7) return r("Falta una semana… dejaste todo a última hora, ¿verdad?");
+  if (d < 7) return r(`Faltan ${d} días… ¿ya compraste o sigues “viendo opciones”?`);
+  if (m === 11 && dd === 16) return r("Hoy empiezan las posadas 🪅 y tú sigues sin regalo.");
+  if (m === 11 && dd === 1) return r("Ya es diciembre. Oficialmente se acabaron las excusas.");
+  return r(`Faltan ${d} días para ${evento}`, { egg: false });
+}
+
+function renderCountdown() {
+  const { fecha, prueba } = fechaActual();
+  const msg = mensajeDelDia(fecha);
+  $("#countdown").textContent = msg.text + (prueba ? " (modo prueba)" : "");
+  $("#countdownPill").classList.toggle("egg", msg.egg);
+  $("#heroYear").textContent = "Navidad " + msg.year;
+  if (msg.dia) avisoDelDia(prueba, msg.year);
+}
+
+function toast(msg, ms) {
   const t = $("#toast");
   t.textContent = msg;
   t.classList.add("show");
   clearTimeout(toast.timer);
-  toast.timer = setTimeout(() => t.classList.remove("show"), 3200);
+  toast.timer = setTimeout(() => t.classList.remove("show"), ms || 3200);
 }
 
 /* ---------- datos ---------- */
@@ -976,6 +1048,7 @@ function wire() {
   });
   document.addEventListener("keydown", (e) => {
     if (e.key !== "Escape") return;
+    if (!eggSheet.hidden) { closeEgg(); return; }
     if (!adminSheet.hidden) { closeAdmin(); return; }
     if (sheet.hidden) return;
     if (!$("#confirmDel").hidden) showConfirm(false); else closeForm();
@@ -987,11 +1060,73 @@ function wire() {
   setInterval(renderCountdown, 3600000);
 }
 
+/* ---------- easter eggs ---------- */
+let snowApi = null;
+let avisoMostrado = false, avisoPrueba = false, avisoClave = "";
+const eggSheet = $("#eggSheet");
+
+function avisoDelDia(prueba, year) {
+  if (avisoMostrado) return;
+  avisoClave = "navidad-ya-compre-" + year;
+  if (!prueba) { try { if (localStorage.getItem(avisoClave)) return; } catch (e) {} }
+  avisoMostrado = true;
+  avisoPrueba = prueba;
+  $("#eggKicker").textContent = "¡Es hoy, es hoy!";
+  $("#eggTitle").textContent = "¿Ya compraste el regalo?";
+  $("#eggText").hidden = true;
+  $("#eggAsk").hidden = false;
+  $("#eggDone").hidden = true;
+  S.lastFocus = document.activeElement;
+  eggSheet.hidden = false; lockScroll(true);
+  setTimeout(() => $("#eggTitle").focus(), 60);
+}
+function responderAviso(compro) {
+  $("#eggKicker").textContent = compro ? "¡Así se hace!" : "Ay, no…";
+  $("#eggTitle").textContent = compro ? "Eres de los buenos 😎" : "Ya valiste 💀";
+  $("#eggText").textContent = compro
+    ? "Tu amigo secreto te lo agradece."
+    : "Plan de emergencia: tarjeta de regalo y cara de que lo planeaste desde octubre.";
+  $("#eggText").hidden = false;
+  $("#eggAsk").hidden = true;
+  $("#eggDone").hidden = false;
+  if (compro) { if (snowApi) snowApi.blizzard(3500); }
+  else { const p = $("#eggPanel"); p.classList.remove("shake"); void p.offsetWidth; p.classList.add("shake"); }
+  if (!avisoPrueba) { try { localStorage.setItem(avisoClave, compro ? "si" : "no"); } catch (e) {} }
+  $("#eggDone button").focus();
+}
+function closeEgg() {
+  if (eggSheet.hidden) return;
+  eggSheet.hidden = true; lockScroll(false);
+  const f = S.lastFocus; S.lastFocus = null;
+  if (f && f.isConnected && typeof f.focus === "function") f.focus({ preventScroll: true });
+}
+
+let toquesSanta = 0, toquesTimer;
+function toqueSanta() {
+  toquesSanta++;
+  clearTimeout(toquesTimer);
+  toquesTimer = setTimeout(() => { toquesSanta = 0; }, 2500);
+  if (toquesSanta >= 5) {
+    toquesSanta = 0;
+    if (snowApi) snowApi.blizzard(6000);
+    toast("Santa está de vacaciones. El regalo lo compras tú. 🎅", 5000);
+  }
+}
+
+function wireEggs() {
+  $("#eggYes").addEventListener("click", () => responderAviso(true));
+  $("#eggNo").addEventListener("click", () => responderAviso(false));
+  eggSheet.querySelectorAll("[data-close-egg]").forEach((b) => b.addEventListener("click", closeEgg));
+  $("h1").addEventListener("click", toqueSanta);
+  $(".hero-tag").addEventListener("click", toqueSanta);
+  window.addEventListener("hashchange", () => { avisoMostrado = false; renderCountdown(); });
+}
+
 /* ---------- nieve ---------- */
 function snow() {
   const c = $("#snow"), ctx = c.getContext && c.getContext("2d");
-  if (!ctx) return;
-  let w = 0, h = 0, flakes = [];
+  if (!ctx) return null;
+  let w = 0, h = 0, flakes = [], base = 0, boost = 1, bt;
   const mk = (anyY) => ({
     x: Math.random() * w, y: anyY ? Math.random() * h : -6,
     r: Math.random() * 2.1 + 0.6, s: Math.random() * 0.45 + 0.2,
@@ -1002,9 +1137,9 @@ function snow() {
     w = window.innerWidth; h = window.innerHeight;
     c.width = Math.round(w * dpr); c.height = Math.round(h * dpr);
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-    const target = Math.round(Math.min(120, (w * h) / 12000));
-    while (flakes.length < target) flakes.push(mk(true));
-    flakes.length = target;
+    base = Math.round(Math.min(120, (w * h) / 12000));
+    while (flakes.length < base) flakes.push(mk(true));
+    if (boost === 1) flakes.length = base;
     for (const f of flakes) { if (f.x > w) f.x = Math.random() * w; if (f.y > h) f.y = Math.random() * h; }
     draw();
   }
@@ -1019,9 +1154,9 @@ function snow() {
   }
   function step() {
     for (const f of flakes) {
-      f.y += f.s * (f.r * 0.55 + 0.45);
+      f.y += f.s * (f.r * 0.55 + 0.45) * boost;
       f.p += 0.012;
-      f.x += Math.sin(f.p) * 0.28;
+      f.x += Math.sin(f.p) * 0.28 * boost;
       if (f.y > h + 6) Object.assign(f, mk(false));
     }
     draw();
@@ -1031,13 +1166,23 @@ function snow() {
   window.addEventListener("resize", () => { clearTimeout(rt); rt = setTimeout(size, 120); });
   size();
   if (!reduceMotion) requestAnimationFrame(step);
+  return {
+    blizzard(ms) {
+      if (reduceMotion) return;
+      boost = 2.6;
+      for (let i = 0; i < 220; i++) flakes.push(mk(true));
+      clearTimeout(bt);
+      bt = setTimeout(() => { boost = 1; flakes.length = base; }, ms);
+    }
+  };
 }
 
 /* ---------- arranque ---------- */
-renderCountdown();
 wire();
+wireEggs();
 renderAll();
-snow();
+snowApi = snow();
+renderCountdown();
 init();
 })();
 </script>
