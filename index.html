@@ -454,6 +454,22 @@ const norm = (s) => String(s).normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCa
 const clean = (s, max) => String(s).trim().replace(/\s+/g, " ").slice(0, max);
 const withTimeout = (p, ms) => Promise.race([p, new Promise((_, rej) => setTimeout(() => rej({ code: "timeout" }), ms))]);
 
+const TIENDAS = [
+  [/(^|\.)(a\.co|amzn\.to|amzn\.eu)$|(^|\.)amazon\./, "Amazon"],
+  [/(^|\.)(mercadolibre|mercadolivre)\.|(^|\.)meli\.la$/, "Mercado Libre"],
+  [/(^|\.)liverpool\.com\.mx$/, "Liverpool"],
+  [/(^|\.)walmart\.com\.mx$/, "Walmart"],
+  [/(^|\.)coppel\.com$/, "Coppel"],
+  [/(^|\.)sears\.com\.mx$/, "Sears"],
+  [/(^|\.)elpalaciodehierro\.com$/, "El Palacio de Hierro"],
+  [/(^|\.)sanborns\.com\.mx$/, "Sanborns"],
+  [/(^|\.)shein\./, "Shein"],
+  [/(^|\.)temu\.(com|to)$/, "Temu"],
+  [/(^|\.)aliexpress\./, "AliExpress"],
+  [/(^|\.)gandhi\.com\.mx$/, "Gandhi"]
+];
+const nombreTienda = (host) => { for (const [re, n] of TIENDAS) if (re.test(host)) return n; return host; };
+
 function richText(str) {
   const frag = document.createDocumentFragment();
   const re = /https?:\/\/[^\s<>"']+/gi;
@@ -463,7 +479,7 @@ function richText(str) {
     if (m.index > last) frag.append(str.slice(last, m.index));
     let host = null;
     try { const u = new URL(url); if (u.protocol === "http:" || u.protocol === "https:") host = u.hostname.replace(/^www\./, ""); } catch (e) {}
-    if (host) frag.append(el("a", { href: url, target: "_blank", rel: "noopener noreferrer", text: host + " ↗" }));
+    if (host) frag.append(el("a", { href: url, target: "_blank", rel: "noopener noreferrer", text: "Ver en " + nombreTienda(host) + " ↗" }));
     else frag.append(url);
     last = m.index + url.length;
     re.lastIndex = last;
