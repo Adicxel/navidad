@@ -175,6 +175,15 @@ h1 .hand{display:block;font-family:var(--font-hand);font-weight:700;color:var(--
 .picked li{display:flex;align-items:center;gap:10px;padding:8px 8px 8px 14px;border-radius:12px;background:var(--wish-bg);color:var(--wish-ink);font-weight:600;line-height:1.35}
 .picked.no li{background:var(--no-bg);color:var(--no-ink)}
 .picked li span{flex:1;min-width:0;overflow-wrap:anywhere}
+.item-title{display:block;font-weight:700}
+.item-links{display:block;font-size:14px;margin-top:2px}
+.picked .item-links{font-size:13px}
+.link-ask{margin-top:10px;padding:12px;border-radius:12px;background:#fff;border:2px dashed #b9d3c3}
+.link-ask-q{margin:0 0 8px;font-weight:700;font-size:15px}
+.link-ask .txt{padding:10px 12px}
+.link-skip{margin-top:6px;background:none;border:0;padding:6px 2px;font:inherit;font-size:14px;color:var(--ink-soft);text-decoration:underline;text-underline-offset:3px;cursor:pointer}
+.picked .name-btn{width:auto;height:auto;border-radius:999px;padding:6px 10px;font:inherit;font-size:13px;font-weight:800;background:#fff}
+.link-skip:focus-visible,.picked .name-btn:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
 .picked button{flex:none;width:34px;height:34px;border-radius:50%;border:0;background:rgba(255,255,255,.75);color:inherit;font-size:21px;line-height:1;cursor:pointer}
 .err{color:var(--no-ink);font-weight:700;font-size:14.5px;margin:8px 0 0}
 .err[hidden]{display:none}
@@ -313,6 +322,14 @@ h1,.hero-tag{-webkit-user-select:none;user-select:none;touch-action:manipulation
           <input id="fWish" class="txt" type="text" maxlength="400" placeholder="Ej. Unos audífonos inalámbricos" autocomplete="off">
           <button type="button" class="btn btn-add" id="addWish">Agregar</button>
         </div>
+        <div class="link-ask" id="askWish" role="group" aria-label="Nombre del link" hidden>
+          <p class="link-ask-q">Pegaste un link de <b class="link-store">la tienda</b>. ¿Qué es?</p>
+          <div class="adder">
+            <input id="askWishInput" class="txt" type="text" maxlength="120" placeholder="Ej. Audífonos Sony negros" autocomplete="off" enterkeyhint="done" aria-label="¿Qué es?">
+            <button type="button" class="btn btn-add" id="askWishOk">Listo</button>
+          </div>
+          <button type="button" class="link-skip" id="askWishSkip">Guardar solo el link</button>
+        </div>
         <div class="ideas" id="ideas"><span>¿Sin ideas? Toca una:</span></div>
         <ul class="picked wish" id="wishList"></ul>
         <p class="err" id="errWish" hidden>Agrega al menos una idea de regalo.</p>
@@ -324,6 +341,14 @@ h1,.hero-tag{-webkit-user-select:none;user-select:none;touch-action:manipulation
         <div class="adder">
           <input id="fNo" class="txt" type="text" maxlength="400" placeholder="Ej. Más tazas, ya tengo muchas" autocomplete="off">
           <button type="button" class="btn btn-add" id="addNo">Agregar</button>
+        </div>
+        <div class="link-ask" id="askNo" role="group" aria-label="Nombre del link" hidden>
+          <p class="link-ask-q">Pegaste un link de <b class="link-store">la tienda</b>. ¿Qué es?</p>
+          <div class="adder">
+            <input id="askNoInput" class="txt" type="text" maxlength="120" placeholder="Ej. Audífonos Sony negros" autocomplete="off" enterkeyhint="done" aria-label="¿Qué es?">
+            <button type="button" class="btn btn-add" id="askNoOk">Listo</button>
+          </div>
+          <button type="button" class="link-skip" id="askNoSkip">Guardar solo el link</button>
         </div>
         <ul class="picked no" id="noList"></ul>
         <p class="err" id="errNo" hidden></p>
@@ -470,22 +495,31 @@ const TIENDAS = [
 ];
 const nombreTienda = (host) => { for (const [re, n] of TIENDAS) if (re.test(host)) return n; return host; };
 
-function richText(str) {
-  const frag = document.createDocumentFragment();
-  const re = /https?:\/\/[^\s<>"']+/gi;
-  let last = 0, m;
-  while ((m = re.exec(str))) {
-    const url = m[0].replace(/[),.;:!?]+$/, "");
-    if (m.index > last) frag.append(str.slice(last, m.index));
-    let host = null;
-    try { const u = new URL(url); if (u.protocol === "http:" || u.protocol === "https:") host = u.hostname.replace(/^www\./, ""); } catch (e) {}
-    if (host) frag.append(el("a", { href: url, target: "_blank", rel: "noopener noreferrer", text: "Ver en " + nombreTienda(host) + " ↗" }));
-    else frag.append(url);
-    last = m.index + url.length;
-    re.lastIndex = last;
-  }
-  if (last < str.length) frag.append(str.slice(last));
-  return frag;
+const URL_RE = /https?:\/\/[^\s<>"']+/gi;
+function partesItem(str) {
+  const urls = [];
+  const text = String(str)
+    .replace(URL_RE, (m) => { const u = m.replace(/[),.;:!?]+$/, ""); urls.push(u); return " " + m.slice(u.length) + " "; })
+    .replace(/\s+/g, " ")
+    .replace(/^[\s\-–—:|·,]+|[\s\-–—:|·,]+$/g, "")
+    .trim();
+  return { text, urls };
+}
+function linkNode(url) {
+  try {
+    const u = new URL(url);
+    if (u.protocol !== "http:" && u.protocol !== "https:") return null;
+    return el("a", { href: url, target: "_blank", rel: "noopener noreferrer", text: "Ver en " + nombreTienda(u.hostname.replace(/^www\./, "")) + " ↗" });
+  } catch (e) { return null; }
+}
+function richItem(str) {
+  const { text, urls } = partesItem(str);
+  const links = urls.map(linkNode).filter(Boolean);
+  if (!links.length) return document.createTextNode(str);
+  const fila = el("span", { class: "item-links" });
+  links.forEach((a, i) => { if (i) fila.append(" · "); fila.append(a); });
+  if (!text) return fila;
+  return el("span", { class: "item-rich" }, el("span", { class: "item-title", text }), fila);
 }
 
 const rtf = (window.Intl && Intl.RelativeTimeFormat) ? new Intl.RelativeTimeFormat("es", { numeric: "auto" }) : null;
@@ -598,7 +632,7 @@ function section(kind, title, items) {
   return el("section", { class: "tag-sec" },
     el("h4", { class: "sec-title " + kind, text: title }),
     items.length
-      ? el("ul", { class: "items " + kind }, items.map((t) => el("li", null, richText(t))))
+      ? el("ul", { class: "items " + kind }, items.map((t) => el("li", null, richItem(t))))
       : el("p", { class: "muted", text: "Todavía no anota nada." }));
 }
 
@@ -808,26 +842,75 @@ function applyCopy() {
 }
 
 function renderPicked() {
-  const pairs = [[S.wants, $("#wishList")], [S.avoid, $("#noList")]];
-  for (const [arr, ul] of pairs) {
-    ul.replaceChildren(...arr.map((t, i) => el("li", null,
-      el("span", null, richText(t)),
-      el("button", {
-        type: "button", "aria-label": `Quitar “${t}”`, text: "×",
-        onclick: () => { arr.splice(i, 1); renderPicked(); }
-      }))));
+  const pairs = [["wish", S.wants, $("#wishList")], ["no", S.avoid, $("#noList")]];
+  for (const [kind, arr, ul] of pairs) {
+    ul.replaceChildren(...arr.map((t, i) => {
+      const p = partesItem(t);
+      return el("li", null,
+        el("span", null, richItem(t)),
+        (p.urls.length && !p.text)
+          ? el("button", { type: "button", class: "name-btn", text: "Ponerle nombre", onclick: () => pedirTitulo(kind, t, i) })
+          : null,
+        el("button", {
+          type: "button", "aria-label": `Quitar “${p.text || "link"}”`, text: "×",
+          onclick: () => { if (S.ask && S.ask.kind === kind) cerrarTitulo(); arr.splice(i, 1); renderPicked(); }
+        }));
+    }));
   }
+}
+
+const cajaTitulo = (kind) => $(kind === "wish" ? "#askWish" : "#askNo");
+function pedirTitulo(kind, links, index) {
+  if (S.ask) resolverTitulo(true);
+  S.ask = { kind, links, index };
+  const box = cajaTitulo(kind), inp = box.querySelector("input");
+  const p = partesItem(links);
+  let tienda = "la tienda";
+  try { tienda = nombreTienda(new URL(p.urls[0]).hostname.replace(/^www\./, "")); } catch (e) {}
+  box.querySelector(".link-store").textContent = tienda;
+  inp.value = "";
+  box.hidden = false;
+  inp.focus();
+}
+function cerrarTitulo() {
+  if (!S.ask) return;
+  const box = cajaTitulo(S.ask.kind);
+  box.hidden = true;
+  box.querySelector("input").value = "";
+  S.ask = null;
+}
+function resolverTitulo(conTitulo) {
+  const a = S.ask;
+  if (!a) return;
+  const box = cajaTitulo(a.kind), inp = box.querySelector("input");
+  const arr = a.kind === "wish" ? S.wants : S.avoid;
+  let titulo = conTitulo ? clean(inp.value, 120) : "";
+  titulo = titulo.slice(0, Math.max(0, MAX_LEN - a.links.length - 1)).trim();
+  const item = titulo ? titulo + " " + a.links : a.links;
+  if (a.index >= 0 && a.index < arr.length) arr[a.index] = item;
+  else if (arr.length < MAX_ITEMS && !arr.some((x) => x.toLowerCase() === item.toLowerCase())) arr.push(item);
+  cerrarTitulo();
+  if (a.kind === "wish") $("#errWish").hidden = true;
+  renderPicked();
+  const main = a.kind === "wish" ? $("#fWish") : $("#fNo");
+  main.focus();
 }
 
 function showErr(id, text) { const e = $(id); if (text) e.textContent = text; e.hidden = false; }
 function clearErrors() { ["#errName", "#errWish", "#errNo", "#formErr"].forEach((s) => { $(s).hidden = true; }); }
 
-function addItem(kind, focus) {
+function addItem(kind, focus, directo) {
   const input = kind === "wish" ? $("#fWish") : $("#fNo");
   const arr = kind === "wish" ? S.wants : S.avoid;
   const text = clean(input.value, MAX_LEN);
   if (!text) { if (focus) input.focus(); return; }
   if (arr.length >= MAX_ITEMS) { showErr(kind === "wish" ? "#errWish" : "#errNo", `Puedes agregar hasta ${MAX_ITEMS} cosas.`); return; }
+  const partes = partesItem(text);
+  if (!directo && partes.urls.length && !partes.text) {
+    input.value = "";
+    pedirTitulo(kind, text, -1);
+    return;
+  }
   if (!arr.some((x) => x.toLowerCase() === text.toLowerCase())) arr.push(text);
   input.value = "";
   if (kind === "wish") $("#errWish").hidden = true;
@@ -861,7 +944,7 @@ function openForm(entry, forSelfNew) {
   S.wants = entry ? [...entry.wants] : [];
   S.avoid = entry ? [...entry.avoid] : [];
   $("#fWish").value = ""; $("#fNo").value = "";
-  applyCopy(); renderPicked(); clearErrors(); showConfirm(false);
+  cerrarTitulo(); applyCopy(); renderPicked(); clearErrors(); showConfirm(false);
   $("#delBtn").hidden = S.editing.isNew;
   S.lastFocus = document.activeElement;
   sheet.hidden = false; lockScroll(true);
@@ -892,8 +975,9 @@ function formError(err) {
 form.addEventListener("submit", async (ev) => {
   ev.preventDefault();
   if (!S.editing || S.saving) return;
-  addItem("wish", false);
-  addItem("no", false);
+  if (S.ask) resolverTitulo(true);
+  addItem("wish", false, true);
+  addItem("no", false, true);
   clearErrors();
   const name = clean($("#fName").value, MAX_NAME);
   let first = null;
@@ -1042,6 +1126,14 @@ function wire() {
   $("#adminBtn").addEventListener("click", openAdmin);
   $("#addWish").addEventListener("click", () => addItem("wish", true));
   $("#addNo").addEventListener("click", () => addItem("no", true));
+  for (const k of ["Wish", "No"]) {
+    $("#ask" + k + "Ok").addEventListener("click", () => resolverTitulo(true));
+    $("#ask" + k + "Skip").addEventListener("click", () => resolverTitulo(false));
+    $("#ask" + k + "Input").addEventListener("keydown", (e) => {
+      if (e.key === "Enter" && !e.isComposing) { e.preventDefault(); resolverTitulo(true); }
+      else if (e.key === "Escape") { e.preventDefault(); e.stopPropagation(); resolverTitulo(false); }
+    });
+  }
   $("#fWish").addEventListener("keydown", (e) => { if (e.key === "Enter" && !e.isComposing) { e.preventDefault(); addItem("wish", true); } });
   $("#fNo").addEventListener("keydown", (e) => { if (e.key === "Enter" && !e.isComposing) { e.preventDefault(); addItem("no", true); } });
   $("#fName").addEventListener("keydown", (e) => { if (e.key === "Enter" && !e.isComposing) { e.preventDefault(); $("#fWish").focus(); } });
